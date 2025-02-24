@@ -8,8 +8,8 @@ import { Navigate } from '@/components/ui/navigate';
 
 export default function Navbar() {
   return (
-    <nav className="z-50 sticky top-0 bg-[--clr-base] flex flex-col justify-center items-center py-6">
-      <div className="w-full max-w-[680px] px-6 flex flex-row justify-end">
+    <nav className="z-50 sticky top-0 bg-[--clr-base] flex flex-col justify-center items-center py-5">
+      <div className="w-full max-w-[680px] px-5 flex flex-row justify-end">
         <div className="flex flex-row gap-2 items-center">
           <div className="flex flex-row gap-2 h-5 items-center px-3 text-neutral-500">
             <Navigate targetId="work" navigateId="navigateWork">

@@ -7,14 +7,14 @@ import { ExternalLink } from 'lucide-react';
 
 const About = ({ about }: { about: PortfolioDto['about'] }) => {
   return (
-    <section className="md:text-lg tracking-tight text-neutral-600 dark:text-neutral-400">
+    <section className="md:text-lg tracking-tighter text-neutral-600 dark:text-neutral-400">
       {parser(about.desc)}
     </section>
   );
 };
 
 const Headline = ({ headline }: { headline: PortfolioDto['headline'] }) => {
-  return <div className="w-full text-neutral-500">{parser(headline.desc)}</div>;
+  return <div className="w-full tracking-tighter text-neutral-500">{parser(headline.desc)}</div>;
 };
 
 const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
@@ -27,19 +27,19 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
         {positions.map((item, index) => (
           <div
             key={index}
-            className="w-full flex flex-row justify-between items-center py-2 px-1"
+            className="w-full flex flex-row items-center justify-between py-2"
           >
-            <div className="flex flex-row items-center gap-3 w-full min-w-0">
+            <div className="flex flex-row items-center gap-2 w-full min-w-0">
               <Link
                 href={item.link}
-                className="flex flex-row items-center gap-3 flex-shrink-0"
+                className="flex flex-row items-center gap-2 flex-shrink-0"
               >
                 <img
                   className="rounded-sm w-6 h-6"
-                  src="https://calix.dev/_next/image?url=%2Fwork%2Framp.png&w=32&q=75"
+                  src="https://calix.dev/_next/image?url=%2Fwork%2Fmercor.jpg&w=32&q=75"
                   alt="Logo, yellow background with black swoosh"
                 />
-                <span className="text-neutral-600 dark:text-neutral-400 text-sm md:text-base whitespace-nowrap">
+                <span className="tracking-tight text-neutral-600 dark:text-neutral-400 text-sm md:text-base whitespace-nowrap">
                   {item.name}
                 </span>
               </Link>
@@ -47,7 +47,7 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
                 {parser(item.desc)}
               </span>
             </div>
-            <span className="text-neutral-500 text-xs md:text-sm whitespace-nowrap">
+            <span className="text-neutral-500 text-sm whitespace-nowrap">
               {formatDate(item.startDate, item.endDate)}
             </span>
           </div>
@@ -71,11 +71,11 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
           >
             <Link
               href={item.link}
-              className="flex flex-col text-neutral-600 dark:text-neutral-400"
+              className="flex flex-col text-neutral-600 tracking-tighter dark:text-neutral-400"
             >
               <span>{item.name}</span>
             </Link>
-            <div className="text-sm text-neutral-500">{parser(item.desc)}</div>
+            <div className="text-sm trakcking-tight text-neutral-500">{parser(item.desc)}</div>
             <ExternalLink className="w-4 h-4 absolute top-3 right-3 text-neutral-500" />
           </div>
         ))}
@@ -97,10 +97,10 @@ const Writing = ({ articles }: { articles: PortfolioDto['articles'] }) => {
             key={index}
             className="py-3 px-1 hover:bg-neutral-50 dark:hover:bg-neutral-900"
           >
-            <span className="flex flex-col text-neutral-600 dark:text-neutral-400">
+            <span className="flex flex-col tracking-tight text-neutral-600 dark:text-neutral-400">
               <span>{item.name}</span>
             </span>
-            <div className="text-neutral-500 text-sm">{parser(item.desc)}</div>
+            <div className="tracking-tigher text-neutral-500 text-sm">{parser(item.desc)}</div>
           </Link>
         ))}
       </div>
@@ -139,7 +139,7 @@ const Press = ({ press }: { press: PortfolioDto['press'] }) => {
           <Link
             href={item.link}
             key={index}
-            className="underline text-neutral-500 text-sm"
+            className="underline tracking-tighter text-neutral-500 text-sm"
           >
             <span>{item.name}</span>
           </Link>
