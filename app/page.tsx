@@ -17,8 +17,8 @@ export default async function Home() {
     <section className="flex flex-col justify-center gap-10">
       
       <header className='flex flex-col sm:flex-row items-start sm:items-center gap-5'>
-        <img className='w-full h-full sm:w-32 sm:h-32 rounded-full' src='/me.jpeg' alt='Picture of me'/>
-        <span className='flex flex-col items-start gap-2'>
+        <img className='w-32 h-fit sm:w-32 sm:h-32 rounded-full' src='/me.jpeg' alt='Picture of me'/>
+        <span className='flex flex-col items-start gap-3'>
           <span className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-5'>
             <h1 className='text-4xl font-semibold tracking-tight text-neutral-600 dark:text-neutral-300'>Kyra Ezikeuzor</h1>
             <SocialBanner/>
