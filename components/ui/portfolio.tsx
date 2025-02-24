@@ -14,7 +14,7 @@ const About = ({ about }: { about: PortfolioDto['about'] }) => {
 };
 
 const Headline = ({ headline }: { headline: PortfolioDto['headline'] }) => {
-  return <div className="w-full tracking-tighter text-neutral-500">{parser(headline.desc)}</div>;
+  return <div className="w-full tracking-tighter text-neutral-600 dark:text-neutral-400">{parser(headline.desc)}</div>;
 };
 
 const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {

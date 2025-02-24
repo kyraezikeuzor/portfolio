@@ -20,7 +20,7 @@ export default async function Home() {
         <img className='w-32 h-fit sm:w-32 sm:h-32 rounded-full' src='/me.jpeg' alt='Picture of me'/>
         <div className='flex flex-col items-start gap-3'>
           <span className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 sm:gap-5'>
-            <h1 className='text-4xl font-semibold tracking-tight text-neutral-600 dark:text-neutral-300'>Kyra Ezikeuzor</h1>
+            <h1 className='text-4xl font-semibold tracking-tighter text-neutral-600 dark:text-neutral-300'>Kyra Ezikeuzor</h1>
             <SocialBanner/>
           </span>
           <Headline headline={portfolio.headline}/>
