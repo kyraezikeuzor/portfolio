@@ -7,7 +7,7 @@ import { ExternalLink } from 'lucide-react';
 
 const About = ({ about }: { about: PortfolioDto['about'] }) => {
   return (
-    <section className="text-lg tracking-tight text-neutral-600 dark:text-neutral-400">
+    <section className="md:text-lg tracking-tight text-neutral-600 dark:text-neutral-400">
       {parser(about.desc)}
     </section>
   );
@@ -39,11 +39,11 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
                   src="https://calix.dev/_next/image?url=%2Fwork%2Framp.png&w=32&q=75"
                   alt="Logo, yellow background with black swoosh"
                 />
-                <span className="text-neutral-600 dark:text-neutral-400  whitespace-nowrap">
+                <span className="text-neutral-600 dark:text-neutral-400 text-xs md:text-base whitespace-nowrap">
                   {item.name}
                 </span>
               </Link>
-              <span className="text-neutral-500 text-xs md:text-sm truncate">
+              <span className="text-neutral-500 text-xs md:text-sm truncate whitespace-nowrap">
                 {parser(item.desc)}
               </span>
             </div>
@@ -63,7 +63,7 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
       <h2 className="text-xl mb-3 tracking-tight text-neutral-600 dark:text-neutral-300">
         Projects
       </h2>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="flex flex-col md:grid grid-cols-2 gap-3">
         {projects.map((item, index) => (
           <div
             key={index}

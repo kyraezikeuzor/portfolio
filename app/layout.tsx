@@ -19,7 +19,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Navbar/>
-        <main className='flex-1 container mx-auto max-w-[680px] px-6'>
+        <main className='flex-1 container mx-auto max-w-[680px] px-6 py-6'>
           {children}
         </main>
         <Footer/>
