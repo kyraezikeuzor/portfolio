@@ -39,11 +39,11 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
                   src="https://calix.dev/_next/image?url=%2Fwork%2Framp.png&w=32&q=75"
                   alt="Logo, yellow background with black swoosh"
                 />
-                <span className="text-neutral-600 dark:text-neutral-400 text-xs md:text-base whitespace-nowrap">
+                <span className="text-neutral-600 dark:text-neutral-400 text-sm md:text-base whitespace-nowrap">
                   {item.name}
                 </span>
               </Link>
-              <span className="text-neutral-500 text-xs md:text-sm truncate whitespace-nowrap">
+              <span className="text-neutral-500 text-sm truncate whitespace-nowrap">
                 {parser(item.desc)}
               </span>
             </div>
