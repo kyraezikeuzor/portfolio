@@ -1,6 +1,0 @@
-.footer {
-    display:grid;
-    grid-template-columns: 4fr 3fr;
-    gap:50px;
-    color:white;
-}
