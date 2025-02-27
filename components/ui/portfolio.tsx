@@ -39,15 +39,15 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
                   src="https://calix.dev/_next/image?url=%2Fwork%2Fmercor.jpg&w=32&q=75"
                   alt="Logo, yellow background with black swoosh"
                 />
-                <span className="tracking-tight text-neutral-600 dark:text-neutral-400 text-sm md:text-base whitespace-nowrap">
+                <span className="tracking-tight text-sm md:text-base whitespace-nowrap">
                   {item.name}
                 </span>
               </Link>
-              <span className="text-sm truncate whitespace-nowrap text-neutral-500 dark:text-neutral-700">
+              <span className="text-sm truncate whitespace-nowrap text-neutral-500">
                 {parser(item.desc)}
               </span>
             </div>
-            <span className="text-sm whitespace-nowrap text-neutral-400 dark:text-neutral-700">
+            <span className="text-sm whitespace-nowrap text-neutral-400">
               {formatDate(item.startDate, item.endDate)}
             </span>
           </div>
@@ -75,7 +75,7 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
             >
               <span>{item.name}</span>
             </Link>
-            <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-700">{parser(item.desc)}</div>
+            <div className="text-sm tracking-tight text-neutral-500">{parser(item.desc)}</div>
             <ExternalLink className="w-4 h-4 absolute top-3 right-3 " />
           </div>
         ))}
