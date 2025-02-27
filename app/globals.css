@@ -20,39 +20,13 @@
 :root {
   --clr-base: #fff;
   --clr-base-text: #353232;
-  --clr-accent: rgb(243, 88, 140);
-
-  --clr-blue-base: #103678; /*#6182FF;*/
-  --clr-blue-light: #fcfcff;
-
-  --clr-grey-light: #f8f8f8;
-  --clr-grey-base: rgb(218, 218, 218);
-
-  --clr-peach-base: rgb(243, 93, 88);
-
-  --clr-green-base: rgb(120, 172, 61);
-  --clr-green-light: rgb(182, 224, 133);
+  --clr-blue-base:#6182FF;
 }
 
 :root.dark {
   --clr-base: #121213;
-  --clr-base-accent: rgb(58, 56, 56);
-  --clr-base-default: rgb(61, 61, 61);
   --clr-base-text: #F9F8F8;
-  --clr-accent: rgb(243, 88, 140);
-
   --clr-blue-base: #6182FF;
-  --clr-blue-light: #f0f3fd;
-  --clr-blue-dark: ;
-
-  --clr-grey-light: rgba(63, 59, 59, 0.39);
-  --clr-grey-base: rgba(204, 202, 202, 0.671);
-  --clr-grey-dark: rgb(156, 156, 156);
-
-  --clr-peach-base: rgb(243, 88, 140);
-
-  --clr-green-base: rgb(120, 172, 61);
-  --clr-green-light: rgb(182, 224, 133);
 }
 
 body {
