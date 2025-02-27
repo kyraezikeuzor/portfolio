@@ -87,7 +87,7 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
 const Writing = ({ articles }: { articles: PortfolioDto['articles'] }) => {
   return (
     <section id="writing" className="flex flex-col">
-      <h2 className="text-xl mb-3 tracking-tight ">
+      <h2 className="text-xl mb-3 tracking-tight">
         Writing
       </h2>
       <div className="flex flex-col divide-y divide-dashed divide-neutral-200 dark:divide-neutral-700 border-y border-dashed border-neutral-200 dark:border-neutral-700">
@@ -97,7 +97,7 @@ const Writing = ({ articles }: { articles: PortfolioDto['articles'] }) => {
             key={index}
             className="py-3 px-1 hover:bg-neutral-50 dark:hover:bg-neutral-900"
           >
-            <span className="flex flex-col tracking-tight ">
+            <span className="flex flex-col tracking-tight">
               <span>{item.name}</span>
             </span>
             <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
@@ -111,7 +111,7 @@ const Writing = ({ articles }: { articles: PortfolioDto['articles'] }) => {
 const Awards = ({ awards }: { awards: PortfolioDto['awards'] }) => {
   return (
     <section id="awards">
-      <h2 className="text-xl mb-3 tracking-tight text-neutral-600 dark:text-neutral-300">
+      <h2 className="text-xl mb-3 tracking-tight">
         Awards
       </h2>
       <Separator />
@@ -130,7 +130,7 @@ const Awards = ({ awards }: { awards: PortfolioDto['awards'] }) => {
 const Press = ({ press }: { press: PortfolioDto['press'] }) => {
   return (
     <section id="press">
-      <h2 className="text-xl mb-3 tracking-tight text-neutral-600 dark:text-neutral-300">
+      <h2 className="text-xl mb-3 tracking-tight">
         Press
       </h2>
       <Separator />
@@ -139,9 +139,9 @@ const Press = ({ press }: { press: PortfolioDto['press'] }) => {
           <Link
             href={item.link}
             key={index}
-            className="underline tracking-tighter text-neutral-500 text-sm"
+            className="underline mr-1 text-sm tracking-tight text-neutral-500 dark:text-neutral-400"
           >
-            <span>{item.name}</span>
+            <span>{item.name}{index+1 != press.length && ', '}</span>
           </Link>
         ))}
       </div>
