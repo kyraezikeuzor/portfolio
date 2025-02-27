@@ -7,20 +7,20 @@ import { ExternalLink } from 'lucide-react';
 
 const About = ({ about }: { about: PortfolioDto['about'] }) => {
   return (
-    <section className="md:text-lg tracking-tighter text-neutral-600 dark:text-neutral-400">
+    <section className="md:text-lg tracking-tight">
       {parser(about.desc)}
     </section>
   );
 };
 
 const Headline = ({ headline }: { headline: PortfolioDto['headline'] }) => {
-  return <div className="w-full tracking-tighter text-neutral-600 dark:text-neutral-400">{parser(headline.desc)}</div>;
+  return <div className="w-full tracking-tight ">{parser(headline.desc)}</div>;
 };
 
 const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
   return (
     <section id="work" className="flex flex-col">
-      <h2 className="text-xl mb-3 tracking-tight text-neutral-600 dark:text-neutral-300">
+      <h2 className="text-xl mb-3 tracking-tight">
         Work
       </h2>
       <div className="flex flex-col divide-y divide-dashed divide-neutral-200 dark:divide-neutral-700 border-y border-dashed border-neutral-200 dark:border-neutral-700">
@@ -43,11 +43,11 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
                   {item.name}
                 </span>
               </Link>
-              <span className="text-neutral-500 text-sm truncate whitespace-nowrap">
+              <span className="text-sm truncate whitespace-nowrap text-neutral-500 dark:text-neutral-700">
                 {parser(item.desc)}
               </span>
             </div>
-            <span className="text-neutral-500 text-sm whitespace-nowrap">
+            <span className="text-sm whitespace-nowrap text-neutral-400 dark:text-neutral-700">
               {formatDate(item.startDate, item.endDate)}
             </span>
           </div>
@@ -71,12 +71,12 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
           >
             <Link
               href={item.link}
-              className="flex flex-col text-neutral-600 tracking-tighter dark:text-neutral-400"
+              className="flex flex-col text-neutral-600 tracking-tight dark:text-neutral-400"
             >
               <span>{item.name}</span>
             </Link>
-            <div className="text-sm trakcking-tight text-neutral-500">{parser(item.desc)}</div>
-            <ExternalLink className="w-4 h-4 absolute top-3 right-3 text-neutral-500" />
+            <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-700">{parser(item.desc)}</div>
+            <ExternalLink className="w-4 h-4 absolute top-3 right-3 " />
           </div>
         ))}
       </div>
@@ -87,7 +87,7 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
 const Writing = ({ articles }: { articles: PortfolioDto['articles'] }) => {
   return (
     <section id="writing" className="flex flex-col">
-      <h2 className="text-xl mb-3 tracking-tight text-neutral-600 dark:text-neutral-300">
+      <h2 className="text-xl mb-3 tracking-tight ">
         Writing
       </h2>
       <div className="flex flex-col divide-y divide-dashed divide-neutral-200 dark:divide-neutral-700 border-y border-dashed border-neutral-200 dark:border-neutral-700">
@@ -97,7 +97,7 @@ const Writing = ({ articles }: { articles: PortfolioDto['articles'] }) => {
             key={index}
             className="py-3 px-1 hover:bg-neutral-50 dark:hover:bg-neutral-900"
           >
-            <span className="flex flex-col tracking-tight text-neutral-600 dark:text-neutral-400">
+            <span className="flex flex-col tracking-tight ">
               <span>{item.name}</span>
             </span>
             <div className="tracking-tigher text-neutral-500 text-sm">{parser(item.desc)}</div>

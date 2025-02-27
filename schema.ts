@@ -78,51 +78,6 @@ export interface Page {
   endDate?: string
 }
 
-
-// RETIRE THIS
-export interface Properties {
-    // Required properties
-    properties: {
-      Id: any,
-      Name: {
-        title: {
-          text?: {
-            content: string;
-          }
-        }
-      },
-      Description: {
-        rich_text?: {
-          text?: {
-            content: string;
-          }
-        }
-      }
-      Link: {
-        url: string;
-      },
-      Type: {
-        select?: {
-          name: string;
-        }
-      },
-      Publish: {
-        checkbox: boolean
-      },
-      StartDate: {
-        date: {
-          start: string;
-        }
-      },
-      EndDate: {
-        date: {
-          start: string;
-        }
-      },
-    }
-
-}
-
 export interface Text {
   text:string,
   link: { url:string} | null,
