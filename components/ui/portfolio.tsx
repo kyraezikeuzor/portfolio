@@ -43,11 +43,11 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
                   {item.name}
                 </span>
               </Link>
-              <span className="text-sm truncate whitespace-nowrap text-neutral-500">
+              <span className="text-sm truncate whitespace-nowrap text-neutral-500 dark:text-neutral-400">
                 {parser(item.desc)}
               </span>
             </div>
-            <span className="text-sm whitespace-nowrap text-neutral-400">
+            <span className="text-sm whitespace-nowrap text-neutral-500 dark:text-neutral-400">
               {formatDate(item.startDate, item.endDate)}
             </span>
           </div>
@@ -71,11 +71,11 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
           >
             <Link
               href={item.link}
-              className="flex flex-col text-neutral-600 tracking-tight dark:text-neutral-400"
+              className="flex flex-col tracking-tight"
             >
               <span>{item.name}</span>
             </Link>
-            <div className="text-sm tracking-tight text-neutral-500">{parser(item.desc)}</div>
+            <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
             <ExternalLink className="w-4 h-4 absolute top-3 right-3 " />
           </div>
         ))}
@@ -100,7 +100,7 @@ const Writing = ({ articles }: { articles: PortfolioDto['articles'] }) => {
             <span className="flex flex-col tracking-tight ">
               <span>{item.name}</span>
             </span>
-            <div className="tracking-tigher text-neutral-500 text-sm">{parser(item.desc)}</div>
+            <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
           </Link>
         ))}
       </div>
