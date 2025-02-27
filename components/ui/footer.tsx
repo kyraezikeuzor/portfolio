@@ -12,7 +12,7 @@ function Footer() {
         <Signature/>
         <p className="text-sm text-neutral-500">
           DFTBA: Don&apos;t forget to be awesome! <br/>
-          I'm always happy to chat! You can find me by emailing me at kyra (at) hackclub.com or kyra (at) omelora.org or any way you can find (linked above or otherwise).
+          I&apos;m always happy to chat! You can find me by emailing me at kyra (at) hackclub.com or kyra (at) omelora.org or any way you can find (linked above or otherwise).
         </p>
         <span className="text-neutral-500 text-sm">Made with ❤️ in Texas.</span>
       </div>
