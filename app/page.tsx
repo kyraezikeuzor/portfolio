@@ -1,8 +1,10 @@
+'use client'
 import type { Metadata } from "next";
 import { Portfolio } from '@/lib/notion'
 import { About, Headline, Work, Projects, Writing, Press } from '@/components/ui/portfolio'
 import { SocialBanner } from '@/components/ui/socials'
-
+import { useEffect, useState } from 'react'
+import { PortfolioDto } from '@/schema'
 
 export const metadata: Metadata = {
   title: "Kyra Ezikeuzor",
@@ -11,7 +13,32 @@ export const metadata: Metadata = {
 
 export default async function Home() {
 
-  const portfolio = await new Portfolio().getPortfolio();
+  //const portfolio = await new Portfolio().getPortfolio();
+  const [portfolio, setDog] = useState<PortfolioDto>
+  ({
+    about: { desc: [] },
+    headline: { desc: [] },
+    projects: [],
+    contacts: [],
+    articles: [],
+    publications: [],
+    press: [],
+    research: [],
+    positions: [],
+    awards: [],
+    certifications: [],
+    education: [],
+    skills: []
+  })
+
+  useEffect(()=>{
+    const getPortfolio = async () => {
+      const puppy = await new Portfolio().getPortfolio()
+      setDog(puppy)
+    }
+
+    getPortfolio()
+  },[])
 
   return (
     <section className="flex flex-col justify-center gap-8">
