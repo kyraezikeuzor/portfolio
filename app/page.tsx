@@ -10,7 +10,7 @@ export default async function Home() {
   return (
     <section className="flex flex-col justify-center gap-8">
       <header className='flex flex-col sm:flex-row items-start sm:items-center gap-5'>
-        <img className='w-32 h-fit sm:w-32 sm:h-32 rounded-full' src='/me.jpeg' alt='Picture of me'/>
+        <img className='w-32 h-fit sm:w-32 sm:h-32 rounded-full' src='/selfie.png' alt='Picture of me'/>
         <div className='flex flex-col items-start gap-3'>
           <div className='flex flex-col items-start gap-1'>
             <h1 className='text-4xl font-semibold tracking-tighter text-neutral-600 dark:text-neutral-300'>Kyra Ezikeuzor</h1>
