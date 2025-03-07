@@ -43,7 +43,7 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
                   {item.name}
                 </span>
               </Link>
-              <span className="text-sm truncate whitespace-nowrap text-neutral-700 dark:text-neutral-200">
+              <span className="text-sm truncate whitespace-nowrap text-neutral-500 dark:text-neutral-400">
                 {parser(item.desc)}
               </span>
             </div>
@@ -143,7 +143,7 @@ const Press = ({ press }: { press: PortfolioDto['press'] }) => {
           <Link
             href={item.link}
             key={index}
-            className="underline underline-offset-2 mr-1 text-sm tracking-tight text-neutral-700 dark:text-neutral-200"
+            className="underline underline-offset-2 mr-1 text-sm tracking-tight text-neutral-700 dark:text-neutral-200 hover:opacity-75"
           >
             <span>{item.name}{index+1 != press.length && ', '}</span>
           </Link>

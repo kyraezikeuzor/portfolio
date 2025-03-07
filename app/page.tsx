@@ -19,7 +19,6 @@ export default async function Home() {
           <SocialBanner/>
         </div>
       </header>
-
       <About about={portfolio.about}/>
       <Work positions={portfolio.positions}/>
       <Projects projects={portfolio.projects}/>
