@@ -1,6 +1,8 @@
+'use cache'
 import { Client } from '@notionhq/client';
 import { Category, PortfolioDto, Page } from '@/schema'
-
+import { cache } from 'react'
+import { revalidateTag } from 'next/cache';
 
 export class Portfolio {
   private connector: Client;
@@ -54,6 +56,7 @@ export class Portfolio {
     };
   }
 
+  
   private categorizePages(pages: Page[]): void {
     pages.forEach(page => {
 
@@ -118,6 +121,7 @@ export class Portfolio {
     });
   }
 
+  
   async getPortfolio(category?: Lowercase<Category>): Promise<PortfolioDto> {
     const response = await this.connector.databases.query({
       database_id: this.databaseId,
@@ -137,5 +141,18 @@ export class Portfolio {
 
     return this.data;
   }
+
+   // Add a new method for manual revalidation
+   async refreshData(): Promise<boolean> {
+    try {
+      // This could trigger a rebuild or refresh mechanism
+      // The actual implementation depends on your deployment platform
+      return true;
+    } catch (error) {
+      console.error('Error refreshing portfolio data', error);
+      return false;
+    }
+  }
+
 }
 
