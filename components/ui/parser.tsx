@@ -10,7 +10,7 @@ export function parser(content: Text[]) {
     const styles = cn(
       'whitespace-pre-wrap',
       line.link &&
-        'underline decoration-[1px] decoration-dashed underline-offset-4  decoration-neutral-400 hover:opacity-75',
+        'underline decoration-[1px] decoration-dashed underline-offset-4 decoration-neutral-400 hover:opacity-75',
       line.bold && 'font-semibold',
       line.italic && 'italic font-normal',
       line.strikethrough && 'line-through',
