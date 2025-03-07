@@ -2,19 +2,19 @@ import Link from 'next/link';
 import { PortfolioDto } from '@/schema';
 import { parser } from '@/components/ui/parser';
 import { Separator } from '@/components/ui/separator';
-import { formatDate } from '@/lib/utils';
+import { formatDate, formatTimespan } from '@/lib/utils';
 import { ExternalLink } from 'lucide-react';
 
 const About = ({ about }: { about: PortfolioDto['about'] }) => {
   return (
-    <section className="md:text-lg tracking-tight">
+    <section className="md:text-lg tracking-tight text-neutral-700 dark:text-neutral-200">
       {parser(about.desc)}
     </section>
   );
 };
 
 const Headline = ({ headline }: { headline: PortfolioDto['headline'] }) => {
-  return <div className="w-full tracking-tight ">{parser(headline.desc)}</div>;
+  return <div className="w-full md:text-lg tracking-tight text-neutral-700 dark:text-neutral-200">{parser(headline.desc)}</div>;
 };
 
 const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
@@ -36,19 +36,19 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
               >
                 <img
                   className="rounded-sm w-6 h-6"
-                  src="https://calix.dev/_next/image?url=%2Fwork%2Fmercor.jpg&w=32&q=75"
+                  src={item.files[0]?.url || ''}
                   alt="Logo, yellow background with black swoosh"
                 />
                 <span className="tracking-tight text-sm md:text-base whitespace-nowrap">
                   {item.name}
                 </span>
               </Link>
-              <span className="text-sm truncate whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+              <span className="text-sm truncate whitespace-nowrap text-neutral-700 dark:text-neutral-200">
                 {parser(item.desc)}
               </span>
             </div>
             <span className="text-sm whitespace-nowrap text-neutral-500 dark:text-neutral-400">
-              {formatDate(item.startDate, item.endDate)}
+              {formatTimespan(item.startDate, item.endDate)}
             </span>
           </div>
         ))}
@@ -67,7 +67,7 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
         {projects.map((item, index) => (
           <div
             key={index}
-            className="relative border border-neutral-200 dark:border-neutral-700 p-3 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-900 cursor-pointer"
+            className="relative border border-neutral-200 dark:border-neutral-700 p-3 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-900 shadow-sm cursor-pointer"
           >
             <Link
               href={item.link}
@@ -75,8 +75,12 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
             >
               <span>{item.name}</span>
             </Link>
-            <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
-            <ExternalLink className="w-4 h-4 absolute top-3 right-3 " />
+            
+            <div className="text-sm tracking-tight text-neutral-700 dark:text-neutral-200">{parser(item.desc)}</div>
+            <ExternalLink className="w-4 h-4 absolute top-3 right-3" />
+            <span className="text-xs whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+              {formatDate(item.startDate)}
+            </span>
           </div>
         ))}
       </div>
@@ -100,7 +104,7 @@ const Writing = ({ articles }: { articles: PortfolioDto['articles'] }) => {
             <span className="flex flex-col tracking-tight">
               <span>{item.name}</span>
             </span>
-            <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
+            <div className="text-sm tracking-tight text-neutral-700 dark:text-neutral-200">{parser(item.desc)}</div>
           </Link>
         ))}
       </div>
@@ -139,7 +143,7 @@ const Press = ({ press }: { press: PortfolioDto['press'] }) => {
           <Link
             href={item.link}
             key={index}
-            className="underline mr-1 text-sm tracking-tight text-neutral-500 dark:text-neutral-400"
+            className="underline underline-offset-2 mr-1 text-sm tracking-tight text-neutral-700 dark:text-neutral-200"
           >
             <span>{item.name}{index+1 != press.length && ', '}</span>
           </Link>

@@ -28,9 +28,9 @@ const ThemeButton = () => {
   return (
     <div onClick={changeTheme} className="cursor-pointer">
       {showDarkMode == true ? (
-        <Sun className="text-[--clr-base-text]" />
+        <Sun className="text-neutral-600 dark:text-neutral-300" />
       ) : (
-        <Moon className="text-[--clr-base-text]" />
+        <Moon className="text-neutral-600 dark:text-neutral-300" />
       )}
     </div>
   );

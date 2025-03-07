@@ -12,10 +12,10 @@ export default async function Home() {
       <header className='flex flex-col sm:flex-row items-start sm:items-center gap-5'>
         <img className='w-32 h-fit sm:w-32 sm:h-32 rounded-full' src='/me.jpeg' alt='Picture of me'/>
         <div className='flex flex-col items-start gap-3'>
-          <span className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 sm:gap-5'>
+          <div className='flex flex-col items-start gap-1'>
             <h1 className='text-4xl font-semibold tracking-tighter text-neutral-600 dark:text-neutral-300'>Kyra Ezikeuzor</h1>
-          </span>
-          <Headline headline={portfolio.headline}/>
+            <Headline headline={portfolio.headline}/>
+          </div>
           <SocialBanner/>
         </div>
       </header>
