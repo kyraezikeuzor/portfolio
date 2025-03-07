@@ -10,7 +10,7 @@ export interface PortfolioDto {
     desc: Text[],
     link: string
     startDate: string,
-    endDate: string
+    endDate: string,
   }[],
   contacts: {
     name: string,
@@ -45,6 +45,7 @@ export interface PortfolioDto {
     link: string,
     startDate: string,
     endDate: string,
+    files: File[]
   }[],
   awards: {
     name: string,
@@ -76,6 +77,7 @@ export interface Page {
   published?: boolean,
   startDate?: string,
   endDate?: string
+  files?: File[];
 }
 
 export interface Text {
@@ -87,6 +89,10 @@ export interface Text {
   underline: boolean,
   code: boolean,
   color: "default" | "red"
+}
+
+export interface File {
+  url: string
 }
   
 export type Category =

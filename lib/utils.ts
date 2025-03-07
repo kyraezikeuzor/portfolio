@@ -14,7 +14,7 @@ export function getPath(text:string) {
   return finalString;
 }
 
-export function formatDate(startDate:string, endDate:string) {
+export function formatTimespan(startDate:string, endDate:string) {
   var formattedStartDate = new Date(startDate).toLocaleDateString('en-US', {
       year: 'numeric'
   });
@@ -32,4 +32,16 @@ export function formatDate(startDate:string, endDate:string) {
   }
 
   return `${formattedStartDate}-${formattedEndDate}`;
+}
+
+export function formatDate(date:string) {
+  var formattedDate = new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric'
+  });
+
+  if (!date) {
+    return ``
+  }
+
+  return `${formattedDate}`;
 }

@@ -52,7 +52,11 @@ export class Portfolio {
       link: page.properties['Link']?.url || '',
       published: page.properties['Publish']?.checkbox || false,
       startDate: page.properties['Timeline']?.date?.start || '',
-      endDate: page.properties['Timeline']?.date?.end || ''
+      endDate: page.properties['Timeline']?.date?.end || '',
+      files: page.properties['Files'].files.map((file: any) => ({
+        name: file.string,
+        url: file.file.url
+      }))
     };
   }
 
@@ -71,7 +75,8 @@ export class Portfolio {
         desc: page.desc || [],
         link: page.link || '',
         startDate: page.startDate || '',
-        endDate: page.endDate || ''
+        endDate: page.endDate || '',
+        files: page.files || []
       };
 
       //console.log(`Processing page: ${page.id} with type: ${page.type}`);
@@ -125,6 +130,12 @@ export class Portfolio {
   async getPortfolio(category?: Lowercase<Category>): Promise<PortfolioDto> {
     const response = await this.connector.databases.query({
       database_id: this.databaseId,
+      sorts: [
+        {
+          property: "Timeline",
+          direction: "descending"
+        }
+      ],
     });
 
     const pages = response.results.map(this.transformPage);
