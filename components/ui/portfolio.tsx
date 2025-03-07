@@ -143,7 +143,7 @@ const Press = ({ press }: { press: PortfolioDto['press'] }) => {
           <Link
             href={item.link}
             key={index}
-            className="underline underline-offset-2 mr-1 text-sm tracking-tight text-neutral-700 dark:text-neutral-200 hover:opacity-75"
+            className="underline decoration-[1px] decoration-dashed underline-offset-4 decoration-neutral-400 mr-1 text-sm tracking-tight text-neutral-700 dark:text-neutral-200 hover:opacity-75"
           >
             <span>{item.name}{index+1 != press.length && ', '}</span>
           </Link>
