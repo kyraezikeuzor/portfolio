@@ -60,7 +60,7 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
 const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
   return (
     <section id="projects" className="flex flex-col">
-      <h2 className="text-xl mb-3 tracking-tight text-neutral-600 dark:text-neutral-300">
+      <h2 className="text-xl mb-3 tracking-tight">
         Projects
       </h2>
       <div className="flex flex-col md:grid grid-cols-2 gap-3">
@@ -76,8 +76,8 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
               <span>{item.name}</span>
             </Link>
             
-            <div className="text-sm tracking-tight text-neutral-700 dark:text-neutral-200">{parser(item.desc)}</div>
-            <ExternalLink className="w-4 h-4 absolute top-3 right-3" />
+            <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
+            <ExternalLink className="w-4 h-4 absolute top-3 right-3 opacity-50" />
             <span className="text-xs whitespace-nowrap text-neutral-500 dark:text-neutral-400">
               {formatDate(item.startDate)}
             </span>
@@ -104,7 +104,7 @@ const Writing = ({ articles }: { articles: PortfolioDto['articles'] }) => {
             <span className="flex flex-col tracking-tight">
               <span>{item.name}</span>
             </span>
-            <div className="text-sm tracking-tight text-neutral-700 dark:text-neutral-200">{parser(item.desc)}</div>
+            <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
           </Link>
         ))}
       </div>
