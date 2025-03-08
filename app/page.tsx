@@ -5,10 +5,20 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Kyra Ezikeuzor",
-  description: "Student aspiring to study molecular biology, computer science, cognitive science, and creative writing, aiming for a career in AI medicine research, global health policy, and writing. ",
+  description: "Student, developer, and writer aspiring to study molecular biology, computer science, cognitive science, and creative writing, aiming for a career in AI medicine research, global health policy, and writing. ",
+  openGraph: {
+    images: [
+      {
+        url: "/thumbnail.png",
+        width: 1200,
+        height: 630,
+        alt: "Pink, red, and orange gradient art",
+      },
+    ],
+}
 };
 
-export const revalidate = 60; // Revalidate every hour
+export const revalidate = 60; // Revalidate every minute
 
 export default async function Home() {
   const portfolio = await new Portfolio().getPortfolio();
