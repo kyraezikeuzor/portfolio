@@ -1,50 +1,82 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 
 type NavigateProps = {
   targetId: string;
   navigateId: string;
+  parentPage: string;
   children: React.ReactNode;
 };
 
-export function Navigate({ targetId, navigateId, children }: NavigateProps) {
+export function Navigate({ targetId, navigateId, parentPage, children }: NavigateProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const scrollToSection = useCallback((section: HTMLElement) => {
+    const navbar = document.querySelector('nav');
+    if (!navbar) return;
+
+    const navbarHeight = navbar.offsetHeight;
+    const targetPosition = section.offsetTop - navbarHeight - 20;
+
+    window.scrollTo({
+      top: targetPosition,
+      behavior: 'smooth',
+    });
+  }, []);
+
   useEffect(() => {
     const navigateButton = document.getElementById(navigateId);
-    const targetSection = document.getElementById(targetId);
 
-    const scrollToTarget = (e: MouseEvent) => {
+    const scrollToTarget = (e: Event) => {
       e.preventDefault();
 
-      if (targetSection) {
-        const navbar = document.querySelector('nav');
-        if (!navbar) return;
-
-        const navbarHeight = navbar.offsetHeight;
-        const targetPosition = targetSection.offsetTop - navbarHeight - 20;
-
-        // Update URL hash without triggering scroll
-        history.pushState(null, '', `#${targetId}`);
-
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth',
-        });
+      // If we're not on the correct page, navigate there first
+      if (pathname !== parentPage) {
+        // Navigate immediately with the hash
+        router.push(`${parentPage}#${targetId}`);
+        
+        // Try to scroll after a very short delay to allow for page load
+        const checkAndScroll = () => {
+          const section = document.getElementById(targetId);
+          if (section) {
+            scrollToSection(section);
+          }
+        };
+        
+        // Try multiple times with increasing delays
+        setTimeout(checkAndScroll, 10);
+        setTimeout(checkAndScroll, 50);
+        setTimeout(checkAndScroll, 100);
+      } else {
+        // If we're already on the correct page, just scroll
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+          history.pushState(null, '', `${parentPage}#${targetId}`);
+          scrollToSection(targetSection);
+        }
       }
     };
 
-    if (navigateButton && targetSection) {
-      navigateButton.addEventListener('click', scrollToTarget as EventListener);
+    // Handle scroll when hash matches and element exists
+    if (window.location.hash === `#${targetId}`) {
+      const section = document.getElementById(targetId);
+      if (section) {
+        scrollToSection(section);
+      }
+    }
+
+    if (navigateButton) {
+      navigateButton.addEventListener('click', scrollToTarget);
     }
 
     return () => {
-      if (navigateButton && targetSection) {
-        navigateButton.removeEventListener(
-          'click',
-          scrollToTarget as EventListener
-        );
+      if (navigateButton) {
+        navigateButton.removeEventListener('click', scrollToTarget);
       }
     };
-  }, [targetId, navigateId]);
+  }, [targetId, navigateId, parentPage, pathname, router, scrollToSection]);
 
   return (
     <div id={navigateId} className="cursor-pointer">

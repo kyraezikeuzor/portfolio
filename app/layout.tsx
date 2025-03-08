@@ -5,6 +5,8 @@ import "./globals.css";
 import Navbar from '@/components/ui/navbar'
 import Footer from '@/components/ui/footer'
 
+import { thumbnailUrl } from '@/lib/constants';
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
     description: "Student, developer, and writer aspiring to study molecular biology, computer science, cognitive science, and creative writing, aiming for a career in AI medicine research, global health policy, and writing. ",
     images: [
       {
-        url: "https://www.kyraezikeuzor.com/thumbnail.png",
+        url: thumbnailUrl,
         width: 1200,
         height: 630,
         alt: "Pink, red, and orange gradient art",
@@ -29,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Kyra Ezikeuzor",
     description: "Student, developer, and writer aspiring to study molecular biology, computer science, cognitive science, and creative writing, aiming for a career in AI medicine research, global health policy, and writing. ",
-    images: ["https://www.kyraezikeuzor.com/thumbnail.png"],
+    images: [thumbnailUrl],
   }
 };
 
