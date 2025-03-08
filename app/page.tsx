@@ -1,6 +1,12 @@
 import { Portfolio } from '@/lib/notion'
 import { About, Headline, Work, Projects, Writing, Press } from '@/components/ui/portfolio'
 import { SocialBanner } from '@/components/ui/socials'
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Kyra Ezikeuzor",
+  description: "Student aspiring to study molecular biology, computer science, cognitive science, and creative writing, aiming for a career in AI medicine research, global health policy, and writing. ",
+};
 
 export const revalidate = 60; // Revalidate every hour
 
