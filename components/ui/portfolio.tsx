@@ -37,7 +37,7 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
                 <img
                   className="rounded-sm w-6 h-6"
                   src={item.files[0]?.url || ''}
-                  alt="Logo, yellow background with black swoosh"
+                  alt={`${item.name} logo`}
                 />
                 <span className="tracking-tight text-sm md:text-base whitespace-nowrap">
                   {item.name}
