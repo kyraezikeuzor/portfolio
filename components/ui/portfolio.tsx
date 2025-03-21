@@ -7,14 +7,14 @@ import { ExternalLink } from 'lucide-react';
 
 const About = ({ about }: { about: PortfolioDto['about'] }) => {
   return (
-    <section className="md:text-lg tracking-tight text-neutral-700 dark:text-neutral-200">
+    <section className="text-lg tracking-tight text-neutral-700 dark:text-neutral-200">
       {parser(about.desc)}
     </section>
   );
 };
 
 const Headline = ({ headline }: { headline: PortfolioDto['headline'] }) => {
-  return <div className="w-full md:text-lg tracking-tight text-neutral-700 dark:text-neutral-200">{parser(headline.desc)}</div>;
+  return <div className="w-full text-lg tracking-tight text-neutral-700 dark:text-neutral-200">{parser(headline.desc)}</div>;
 };
 
 const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
@@ -71,16 +71,17 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
           >
             <Link
               href={item.link}
-              className="flex flex-col tracking-tight"
+              className="flex flex-row gap-1 items-center tracking-tight"
             >
               <span>{item.name}</span>
+              <span className="mt-[2px] text-xs whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+              {formatDate(item.startDate)}
+              </span>
             </Link>
             
             <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
             <ExternalLink className="w-4 h-4 absolute top-3 right-3 opacity-50" />
-            <span className="text-xs whitespace-nowrap text-neutral-500 dark:text-neutral-400">
-              {formatDate(item.startDate)}
-            </span>
+            
           </div>
         ))}
       </div>
