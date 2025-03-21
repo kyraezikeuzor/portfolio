@@ -39,15 +39,15 @@ const Work = ({ positions }: { positions: PortfolioDto['positions'] }) => {
                   src={item.files[0]?.url || ''}
                   alt={`${item.name} logo`}
                 />
-                <span className="tracking-tight text-sm md:text-base whitespace-nowrap">
+                <span className="tracking-tight text-base whitespace-nowrap">
                   {item.name}
                 </span>
               </Link>
-              <span className="text-sm truncate whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+              <span className="tracking-tight text-sm truncate whitespace-nowrap text-neutral-500 dark:text-neutral-400">
                 {parser(item.desc)}
               </span>
             </div>
-            <span className="text-sm whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+            <span className="tracking-tight text-sm whitespace-nowrap text-neutral-500 dark:text-neutral-400">
               {formatTimespan(item.startDate, item.endDate)}
             </span>
           </div>
