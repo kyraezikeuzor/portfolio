@@ -67,7 +67,7 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
         {projects.map((item, index) => (
           <div
             key={index}
-            className="relative border border-neutral-200 dark:border-neutral-700 p-3 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-900 shadow-sm cursor-pointer"
+            className="relative border border-neutral-200 dark:border-neutral-700 p-3 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-900 cursor-pointer"
           >
             <Link
               href={item.link}
