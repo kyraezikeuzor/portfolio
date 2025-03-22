@@ -27,6 +27,10 @@ export function formatTimespan(startDate: string, endDate: string) {
   const formattedStartDate = new Date(startDate).toLocaleDateString('en-US', {
     year: 'numeric'
   });
+
+  const formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {
+    year: 'numeric'
+  });
   
   // If endDate doesn't exist, it means the timespan is ongoing
   if (!endDate) {
@@ -34,13 +38,10 @@ export function formatTimespan(startDate: string, endDate: string) {
   }
   
   // If both dates are the same, just return a single year
-  if (startDate === endDate) {
+  if (formattedStartDate === formattedEndDate) {
     return formattedStartDate;
   }
-  
-  const formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {
-    year: 'numeric'
-  });
+
   
   return `${formattedStartDate}-${formattedEndDate}`;
 }
