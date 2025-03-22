@@ -162,8 +162,8 @@ export class Portfolio {
     } catch (error) {
       console.error('Error refreshing portfolio data', error);
       return false;
-    }
+    
   }
 
 }
-
+}

@@ -14,23 +14,34 @@ export function getPath(text:string) {
   return finalString;
 }
 
-export function formatTimespan(startDate:string, endDate:string) {
-  var formattedStartDate = new Date(startDate).toLocaleDateString('en-US', {
-      year: 'numeric'
-  });
-
-  var formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {
-      year: 'numeric'
-  });
-
-  if (!startDate) {
-    return `Present`
+export function formatTimespan(startDate: string, endDate: string) {
+  // Handle missing dates
+  if (!startDate && !endDate) {
+    return "Present";
   }
-
+  
+  if (!startDate) {
+    return "Present";
+  }
+  
+  const formattedStartDate = new Date(startDate).toLocaleDateString('en-US', {
+    year: 'numeric'
+  });
+  
+  // If endDate doesn't exist, it means the timespan is ongoing
   if (!endDate) {
     return `${formattedStartDate}-Present`;
   }
-
+  
+  // If both dates are the same, just return a single year
+  if (startDate === endDate) {
+    return formattedStartDate;
+  }
+  
+  const formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {
+    year: 'numeric'
+  });
+  
   return `${formattedStartDate}-${formattedEndDate}`;
 }
 
