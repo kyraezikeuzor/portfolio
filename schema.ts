@@ -12,7 +12,7 @@ export interface PortfolioDto {
     startDate: string,
     endDate: string,
   }[],
-  contacts: {
+  socials: {
     name: string,
     desc: Text[],
     link: string
@@ -99,7 +99,7 @@ export type Category =
     | "about"
     | "headline"
     | "project"
-    | "contact"
+    | "social"
     | "article"
     | "publication"
     | "press"

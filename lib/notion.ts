@@ -20,7 +20,7 @@ export class Portfolio {
       about: { desc: [] },
       headline: { desc: [] },
       projects: [],
-      contacts: [],
+      socials: [],
       articles: [],
       publications: [],
       press: [],
@@ -91,8 +91,8 @@ export class Portfolio {
         case 'project':
           this.data.projects.push(item);
           break;
-        case 'contact':
-          this.data.contacts.push({ name: item.name, desc: item.desc, link: item.link });
+        case 'social':
+          this.data.socials.push({ name: item.name, desc: item.desc, link: item.link });
           break;
         case 'article':
           this.data.articles.push({ name: item.name, desc: item.desc, link: item.link });
