@@ -90,26 +90,28 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
         Projects
       </h2>
       <div className="flex flex-col md:grid grid-cols-2 gap-3">
-        {projects.map((item, index) => (
-          <div
-            key={index}
-            className="relative border border-neutral-200 dark:border-neutral-700 p-3 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-900 cursor-pointer"
-          >
-            <Link
-              href={item.link}
-              className="flex flex-row gap-1 items-center tracking-tight"
+        {projects.map((item, index) => {
+          console.log(`Project ${index} link:`, item.link);
+          return (
+            <div
+              key={index}
+              className="relative border border-neutral-200 dark:border-neutral-700 p-3 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-900 cursor-pointer"
             >
-              <span>{item.name}</span>
-              <span className="mt-[2px] text-xs whitespace-nowrap text-neutral-500 dark:text-neutral-400">
-              {formatDate(item.startDate)}
-              </span>
-            </Link>
-            
-            <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
-            <ExternalLink className="w-4 h-4 absolute top-3 right-3 opacity-50" />
-            
-          </div>
-        ))}
+              <Link
+                href={item.link}
+                className="flex flex-row gap-1 items-center tracking-tight"
+              >
+                <span>{item.name}</span>
+                <span className="mt-[2px] text-xs whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+                  {formatDate(item.startDate)}
+                </span>
+              </Link>
+              
+              <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
+              {item.link !== '' && item.link !== undefined && <ExternalLink className="w-4 h-4 absolute top-3 right-3 opacity-50" />}
+            </div>
+          );
+        })}
       </div>
     </section>
   );
