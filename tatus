@@ -1,0 +1,5 @@
+[33m929d27a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Stash
+[33me18db63[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fixed feature for conditionally rendering link icon
+[33mfcc88b4[m Removed unused variables
+[33m2797f1a[m Show link icon if link is there
+[33m257639c[m Synced socials list from database to site + modifed schema + styling
