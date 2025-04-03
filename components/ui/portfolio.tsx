@@ -101,12 +101,12 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
             >
               <span>{item.name}</span>
               <span className="mt-[2px] text-xs whitespace-nowrap text-neutral-500 dark:text-neutral-400">
-              {formatDate(item.startDate)}
+                {formatDate(item.startDate)}
               </span>
             </Link>
             
             <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
-            <ExternalLink className="w-4 h-4 absolute top-3 right-3 opacity-50" />
+          {}
             
           </div>
         ))}
