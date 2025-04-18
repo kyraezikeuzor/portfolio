@@ -19,6 +19,7 @@ export class Portfolio {
     return {
       about: { desc: [] },
       headline: { desc: [] },
+      postscript: { desc: []},
       projects: [],
       socials: [],
       articles: [],
@@ -84,6 +85,9 @@ export class Portfolio {
       switch (page.type.toLowerCase() as Category) {
         case 'about':
           this.data.about = { desc: item.desc };
+          break;
+        case 'postscript':
+          this.data.postscript = { desc: item.desc };
           break;
         case 'headline':
           this.data.headline = { desc: item.desc };

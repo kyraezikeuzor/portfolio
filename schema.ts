@@ -5,6 +5,9 @@ export interface PortfolioDto {
   headline: {
     desc: Text[]
   },
+  postscript: {
+    desc: Text[]
+  },
   projects: {
     name: string,
     desc: Text[],
@@ -98,6 +101,7 @@ export interface File {
 export type Category =
     | "about"
     | "headline"
+    | "postscript"
     | "project"
     | "social"
     | "article"

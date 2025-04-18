@@ -12,9 +12,13 @@ const About = ({ about }: { about: PortfolioDto['about'] }) => {
     </section>
   );
 };
-
+  
 const Headline = ({ headline }: { headline: PortfolioDto['headline'] }) => {
   return <div className="w-full text-lg tracking-tight text-neutral-700 dark:text-neutral-200">{parser(headline.desc)}</div>;
+};
+
+const Postscript = ({ postscript }: { postscript: PortfolioDto['postscript'] }) => {  
+  return <div className="w-full text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(postscript.desc)}</div>;
 };
 
 const Socials = ({ socials }: { socials: PortfolioDto['socials'] }) => {
@@ -182,4 +186,4 @@ const Press = ({ press }: { press: PortfolioDto['press'] }) => {
   );
 };
 
-export { About, Headline, Socials, Work, Projects, Writing, Awards, Press };
+export { About, Headline, Postscript,Socials, Work, Projects, Writing, Awards, Press };
