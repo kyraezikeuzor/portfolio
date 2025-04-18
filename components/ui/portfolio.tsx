@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { PortfolioDto } from '@/schema';
 import { parser } from '@/components/ui/parser';
 import { Separator } from '@/components/ui/separator';
-import { formatDate, formatTimespan } from '@/lib/utils';
+import { formatDate, formatTimespan, extractSiteName } from '@/lib/utils';
 import { ExternalLink, Mail } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 const About = ({ about }: { about: PortfolioDto['about'] }) => {
   return (
@@ -121,21 +122,22 @@ const Projects = ({ projects }: { projects: PortfolioDto['projects'] }) => {
   );
 };
 
-const Writing = ({ articles }: { articles: PortfolioDto['articles'] }) => {
+const Writing = ({ publications }: { publications: PortfolioDto['publications'] }) => {
   return (
     <section id="writing" className="flex flex-col">
       <h2 className="text-xl mb-3 tracking-tight">
         Writing
       </h2>
       <div className="flex flex-col divide-y divide-dashed divide-neutral-200 dark:divide-neutral-700 border-y border-dashed border-neutral-200 dark:border-neutral-700">
-        {articles.map((item, index) => (
+        {publications.map((item, index) => (
           <Link
             href={item.link}
             key={index}
             className="py-3 px-1 hover:bg-neutral-50 dark:hover:bg-neutral-900"
           >
-            <span className="flex flex-col tracking-tight">
+            <span className="flex flex-row items-center gap-2 tracking-tight">
               <span>{item.name}</span>
+              <Badge variant="outline">{extractSiteName(item.link)}</Badge>
             </span>
             <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
           </Link>

@@ -38,7 +38,7 @@ export default async function Home() {
       <About about={portfolio.about}/>
       <Work positions={portfolio.positions}/>
       <Projects projects={portfolio.projects}/>
-      <Writing articles={portfolio.articles}/>
+      <Writing publications={portfolio.publications}/>
       <Press press={portfolio.press}/>
     </section>
   );
