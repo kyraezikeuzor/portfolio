@@ -3,7 +3,7 @@ export function Signature() {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      className='w-[80%]'
+      className='w-[70%]'
       zoomAndPan="magnify"
       viewBox="0 0 224.87999 37.5"
       preserveAspectRatio="xMidYMid meet"
