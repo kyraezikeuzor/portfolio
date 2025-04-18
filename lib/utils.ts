@@ -57,3 +57,8 @@ export function formatDate(date:string) {
 
   return `${formattedDate}`;
 }
+
+export function extractSiteName(url:string) {
+  const parsedUrl = new URL(url);
+  return parsedUrl.hostname.replace('www.', '');
+}
