@@ -10,13 +10,13 @@ const ThemeButton = () => {
   }, [showDarkMode]);
 
   useEffect(() => {
-    const data = window.localStorage.getItem('SEDGE_APP_THEME');
+    const data = window.localStorage.getItem('KYRA_PORTFOLIO_THEME');
     if (data != null) setShowDarkMode(JSON.parse(data));
   }, []);
 
   useEffect(() => {
     window.localStorage.setItem(
-      'SEDGE_APP_THEME',
+      'KYRA_PORTFOLIO_THEME',
       JSON.stringify(showDarkMode)
     );
   }, [showDarkMode]);
