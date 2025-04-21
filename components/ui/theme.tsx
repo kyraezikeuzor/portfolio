@@ -7,19 +7,16 @@ const ThemeButton = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    // Check for saved theme preference
     const savedTheme = localStorage.getItem('KYRA_PORTFOLIO_THEME');
     if (savedTheme) {
       setIsDarkMode(JSON.parse(savedTheme));
     } else {
-      // Check system preference
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       setIsDarkMode(prefersDark);
     }
   }, []);
 
   useEffect(() => {
-    // Update the document class and save preference
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {
