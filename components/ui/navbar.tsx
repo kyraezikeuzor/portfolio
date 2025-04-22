@@ -1,8 +1,5 @@
-'use client';
 import React from 'react';
-import Link from 'next/link';
 import Theme from './theme';
-import Logo from './logo';
 import { Separator } from '@/components/ui/separator';
 import { Navigate } from '@/components/ui/navigate';
 
