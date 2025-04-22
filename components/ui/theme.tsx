@@ -4,43 +4,35 @@ import React, { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 
 const ThemeButton = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showDarkMode, setShowDarkMode] = useState(false);
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', showDarkMode);
+  }, [showDarkMode]);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('KYRA_PORTFOLIO_THEME');
-    if (savedTheme) {
-      setIsDarkMode(JSON.parse(savedTheme));
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDarkMode(prefersDark);
-    }
+    const data = window.localStorage.getItem('KYRA_PORTFOLIO_THEME');
+    if (data != null) setShowDarkMode(JSON.parse(data));
   }, []);
 
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem('KYRA_PORTFOLIO_THEME', JSON.stringify(isDarkMode));
-  }, [isDarkMode]);
+    window.localStorage.setItem(
+      'KYRA_PORTFOLIO_THEME',
+      JSON.stringify(showDarkMode)
+    );
+  }, [showDarkMode]);
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+  const changeTheme = () => {
+    setShowDarkMode((prevMode) => !prevMode);
   };
 
   return (
-    <button
-      onClick={toggleTheme}
-      className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-      aria-label="Toggle theme"
-    >
-      {isDarkMode ? (
-        <Sun className="w-5 h-5 text-neutral-600 dark:text-neutral-300" />
+    <div onClick={changeTheme} className="cursor-pointer p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+      {showDarkMode == true ? (
+        <Sun className="text-neutral-600 dark:text-neutral-300" />
       ) : (
-        <Moon className="w-5 h-5 text-neutral-600 dark:text-neutral-300" />
+        <Moon className="text-neutral-600 dark:text-neutral-300" />
       )}
-    </button>
+    </div>
   );
 };
 
