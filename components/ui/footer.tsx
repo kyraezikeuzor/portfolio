@@ -3,7 +3,6 @@ import { Signature } from '@/components/ui/signature';
 import { Postscript } from './portfolio';
 import { Portfolio } from '@/lib/notion'
 
-
 export default async function Footer() {
   const portfolio = await new Portfolio().getPortfolio();
 
