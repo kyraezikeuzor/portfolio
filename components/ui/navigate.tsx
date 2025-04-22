@@ -22,7 +22,7 @@ export function Navigate({ targetId, navigateId, parentPage, children }: Navigat
 
     window.scrollTo({
       top: targetPosition,
-      behavior: 'smooth',
+      behavior: 'instant',
     });
   }, []);
 
