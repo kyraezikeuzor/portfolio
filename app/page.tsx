@@ -1,22 +1,6 @@
 import { Portfolio } from '@/lib/notion'
 import { About, Socials, Headline, Work, Projects, Writing, Press } from '@/components/ui/portfolio'
-import type { Metadata } from "next";
-import { thumbnailUrl, selfieUrl } from '@/lib/constants';
-
-export const metadata: Metadata = {
-  title: "Kyra Ezikeuzor",
-  description: "Student, developer, and writer aspiring to study molecular biology, computer science, cognitive science, and creative writing, aiming for a career in AI medicine research, global health policy, and writing. ",
-  openGraph: {
-    images: [
-      {
-        url: thumbnailUrl,
-        width: 1200,
-        height: 630,
-        alt: "Pink, red, and orange gradient art",
-      },
-    ],
-}
-};
+import { selfieUrl } from '@/lib/constants';
 
 export const revalidate = 60; // Revalidate every minute
 
