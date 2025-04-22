@@ -3,7 +3,7 @@ import { PortfolioDto } from '@/schema';
 import { parser } from '@/components/ui/parser';
 import { Separator } from '@/components/ui/separator';
 import { formatDate, formatTimespan, extractSiteName } from '@/lib/utils';
-import { ExternalLink, Mail } from 'lucide-react';
+import { ExternalLink, Link as LinkIcon, Mail } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const About = ({ about }: { about: PortfolioDto['about'] }) => {
@@ -135,11 +135,20 @@ const Writing = ({ publications }: { publications: PortfolioDto['publications'] 
             key={index}
             className="py-3 px-1 hover:bg-neutral-50 dark:hover:bg-neutral-900"
           >
-            <span className="flex flex-row items-center gap-2 tracking-tight">
-              <span>{item.name}</span>
-              <Badge variant="outline">{extractSiteName(item.link)}</Badge>
-            </span>
-            <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">{parser(item.desc)}</div>
+            <div className="flex flex-col gap-1">
+
+              <div className="inline justify-center items-center flex-wrap tracking-tight">
+                <span className="mr-2">{item.name}</span>
+                <span className="inline-flex items-center text-xs text-neutral-500 dark:text-neutral-400">
+                  <LinkIcon className="w-2 h-2 mr-[1px]" />
+                  {extractSiteName(item.link)}
+                </span>
+              </div>
+
+              <div className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400">
+                {parser(item.desc)}
+              </div>
+            </div>
           </Link>
         ))}
       </div>
