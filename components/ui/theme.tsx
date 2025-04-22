@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 
-const ThemeButton = () => {
+const Theme = () => {
   const [showDarkMode, setShowDarkMode] = useState(false);
   useEffect(() => {
     document.documentElement.classList.toggle('dark', showDarkMode);
@@ -36,4 +36,4 @@ const ThemeButton = () => {
   );
 };
 
-export default ThemeButton;
+export default Theme;
