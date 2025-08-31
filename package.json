@@ -1,35 +1,34 @@
 {
-  "name": "kyra-ezikeuzor",
+  "name": "portfolio",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npx tsx lib/uploader.ts && next dev",
+    "build": "npx tsx lib/uploader.ts && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "upload-images": "npx tsx lib/uploader.ts && npm run build"
   },
   "dependencies": {
     "@notionhq/client": "^2.2.15",
     "@radix-ui/react-avatar": "^1.1.3",
     "@radix-ui/react-separator": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
-    "browserslist": "^4.24.4",
-    "caniuse-lite": "^1.0.30001702",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.6.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.5.0",
     "lucide-react": "^0.475.0",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18",
-    "react-social-media-icons": "^10.0.4",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss-animate": "^1.0.7",
-    "use-mailchimp-form": "^3.1.0"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/dotenv": "^8.2.3",
     "@types/node": "^20",
-    "@types/nodemailer": "^6.4.14",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
@@ -40,6 +39,7 @@
     "postcss": "^8",
     "prettier": "^3.5.2",
     "tailwindcss": "^3.3.0",
+    "tsx": "^4.19.4",
     "typescript": "^5",
     "typescript-eslint": "^8.24.1"
   }

@@ -1,173 +1,182 @@
-'use cache'
-import { Client } from '@notionhq/client';
-import { Category, PortfolioDto, Page } from '@/schema'
-import { cache } from 'react'
-import { revalidateTag } from 'next/cache';
+import { Client, LogLevel } from '@notionhq/client';
+import {
+  GetBlockResponse,
+  GetPageResponse,
+  ListBlockChildrenResponse,
+  QueryDatabaseResponse,
+} from '@notionhq/client/build/src/api-endpoints';
+import { BLOCK_TYPE_IMAGE } from '@/lib/constants';
+import Logger from '@/lib/logger';
+import { NotionDatabaseProperties } from '@/types';
 
-export class Portfolio {
-  private connector: Client;
-  private databaseId: string;
-  private data: PortfolioDto;
+export default class NotionClient {
+  private client: Client;
+  log: Logger;
 
-  constructor() {
-    this.connector = new Client({ auth: process.env.NEXT_PUBLIC_NOTION_PORTFOLIO_CMS_KEY });
-    this.databaseId = process.env.NEXT_PUBLIC_NOTION_DB_ID || "";
-    this.data = this.initializeEmptyPortfolio();
-  }
-
-  private initializeEmptyPortfolio(): PortfolioDto {
-    return {
-      about: { desc: [] },
-      headline: { desc: [] },
-      postscript: { desc: []},
-      projects: [],
-      socials: [],
-      articles: [],
-      publications: [],
-      press: [],
-      research: [],
-      positions: [],
-      awards: [],
-      certifications: [],
-      education: [],
-      skills: []
-    };
-  }
-  //desc: page.properties['Description']?.rich_text?.[0]?.text?.content || '',
-
-  private transformPage(page: any): Page {
-    return {
-      id: page.id,
-      name: page.properties['Name']?.title[0]?.text?.content || '',
-      desc: page.properties['Description']?.rich_text?.map((line: any) => ({
-        text: line.plain_text,
-        link: line.text.link,
-        bold: line.annotations.bold,
-        italic: line.annotations.italic,
-        strikethrough: line.annotations.strikethrough,
-        underline: line.annotations.underline,
-        code: line.annotations.code,
-        color: line.annotations.color
-      })),
-      type: page.properties['Type']?.select?.name,
-      link: page.properties['Link']?.url || '',
-      published: page.properties['Publish']?.checkbox || false,
-      startDate: page.properties['Timeline']?.date?.start || '',
-      endDate: page.properties['Timeline']?.date?.end || '',
-      files: page.properties['Files'].files.map((file: any) => ({
-        name: file.string,
-        url: file.file.url
-      }))
-    };
-  }
-
-  
-  private categorizePages(pages: Page[]): void {
-    pages.forEach(page => {
-
-      if (!page.type || !page.published) {
-        //console.log(`Skipping page ${page.id}: type=${page.type}, published=${page.published}`);
-        return;
-      }if (!page.type || !page.published) return;
-
-
-      const item = {
-        name: page.name || '',
-        desc: page.desc || [],
-        link: page.link || '',
-        startDate: page.startDate || '',
-        endDate: page.endDate || '',
-        files: page.files || []
-      };
-
-      //console.log(`Processing page: ${page.id} with type: ${page.type}`);
-
-      switch (page.type.toLowerCase() as Category) {
-        case 'about':
-          this.data.about = { desc: item.desc };
-          break;
-        case 'postscript':
-          this.data.postscript = { desc: item.desc };
-          break;
-        case 'headline':
-          this.data.headline = { desc: item.desc };
-          break;
-        case 'project':
-          this.data.projects.push(item);
-          break;
-        case 'social':
-          this.data.socials.push({ name: item.name, desc: item.desc, link: item.link });
-          break;
-        case 'article':
-          this.data.articles.push({ name: item.name, desc: item.desc, link: item.link });
-          break;
-        case 'publication':
-          this.data.publications.push({ name: item.name, desc: item.desc, link: item.link });
-          break;
-        case 'press':
-          this.data.press.push({ name: item.name, desc: item.desc, link: item.link });
-          break;
-        case 'research':
-          this.data.research.push(item);
-          break;
-        case 'position':
-          this.data.positions.push(item);
-          break;
-        case 'award':
-          this.data.awards.push({ name: item.name, dateReceived: item.endDate });
-          break;
-        case 'certification':
-          this.data.certifications.push({ name: item.name, link: item.link, dateReceived: item.endDate });
-          break;
-        case 'education':
-          this.data.education.push({ name: item.name, desc: item.desc, link: item.link, startDate: item.startDate, endDate: item.endDate });
-          break;
-        case 'skill':
-          this.data.skills.push({ name: item.name });
-          break;
-      }
-
+  constructor(auth: string, log: Logger) {
+    this.client = new Client({
+      auth,
+      logLevel:
+        process.env.NODE_ENV === 'development' ? LogLevel.DEBUG : LogLevel.WARN,
     });
+    this.log = log;
   }
 
-  
-  async getPortfolio(category?: Lowercase<Category>): Promise<PortfolioDto> {
-    const response = await this.connector.databases.query({
-      database_id: this.databaseId,
-      sorts: [
-        {
-          property: "Timeline",
-          direction: "descending"
-        }
-      ],
-    });
+  async getPagesFromDatabase(
+    notionDatabaseId: string,
+    sortProperty?: keyof NotionDatabaseProperties,
+    sortDirection?: 'ascending' | 'descending'
+  ): Promise<GetPageResponse[]> {
+    let hasMore = true;
+    let nextCursor: string | null = null;
+    const pages: GetPageResponse[] = [];
 
-    const pages = response.results.map(this.transformPage);
-    
-    if (category) {
-      const newPages = pages.filter(item => 
-        item.type?.toLowerCase() === category && item.published
+    while (hasMore) {
+      this.log.debug(
+        `Fetching pages from database ${notionDatabaseId} with cursor ${nextCursor}`
       );
-      this.categorizePages(newPages);
 
-    } else if (!category) {
-      this.categorizePages(pages)
+      const result: QueryDatabaseResponse = await this.client.databases.query({
+        database_id: notionDatabaseId,
+        start_cursor: nextCursor || undefined,
+        sorts: sortProperty
+          ? [
+              {
+                property: sortProperty,
+                direction: sortDirection || 'descending',
+              },
+            ]
+          : [],
+      });
+
+      pages.push(...(result.results as GetPageResponse[]));
+
+      hasMore = result.has_more;
+      nextCursor = result.next_cursor;
+
+      if (hasMore) {
+        this.log.debug('⚠️ More than 100 pages in db, fetching more...');
+      }
     }
 
-    return this.data;
+    return pages;
   }
 
-   // Add a new method for manual revalidation
-   async refreshData(): Promise<boolean> {
-    try {
-      // This could trigger a rebuild or refresh mechanism
-      // The actual implementation depends on your deployment platform
-      return true;
-    } catch (error) {
-      console.error('Error refreshing portfolio data', error);
-      return false;
-    
+  async getPageIdsFromDatabase(notionDatabaseId: string): Promise<string[]> {
+    const pages = await this.getPagesFromDatabase(notionDatabaseId);
+    return pages.map((page) => page.id);
   }
 
-}
+  async getPage(notionPageId: string): Promise<GetPageResponse> {
+    const result = await this.client.pages.retrieve({
+      page_id: notionPageId,
+    });
+    return result;
+  }
+
+  async fetchAllBlocks(pageIdOrBlockId: string): Promise<GetBlockResponse[]> {
+    let hasMore = true;
+    let nextCursor: string | null = null;
+    const blocks: GetBlockResponse[] = [];
+
+    while (hasMore) {
+      const result: ListBlockChildrenResponse =
+        await this.client.blocks.children.list({
+          block_id: pageIdOrBlockId,
+          start_cursor: nextCursor || undefined,
+        });
+
+      blocks.push(...result.results);
+
+      hasMore = result.has_more;
+      nextCursor = result.next_cursor;
+
+      if (hasMore) {
+        this.log.debug('⚠️ More than 100 blocks in page, fetching more...');
+      }
+    }
+
+    // Retrieve block children for nested blocks (one level deep), for example toggle blocks
+    // https://developers.notion.com/docs/working-with-page-content#reading-nested-blocks
+    const childBlocks = await Promise.all(
+      blocks
+        .filter((block) => 'has_children' in block && block.has_children)
+        .map(async (block) => {
+          const childBlocks = await this.fetchAllBlocks(block.id);
+          return childBlocks;
+        })
+    );
+
+    // We don't care about the order they are. Otherwise, we'd group child blocks with their parents
+    return [...blocks, ...childBlocks.flat()];
+  }
+
+  async fetchAllImageBlocks(
+    pageIdOrBlockId: string
+  ): Promise<GetBlockResponse[]> {
+    const allBlocks = await this.fetchAllBlocks(pageIdOrBlockId);
+    const imageBlocks = allBlocks.filter(
+      (block) => 'type' in block && block.type === BLOCK_TYPE_IMAGE
+    );
+    return imageBlocks;
+  }
+
+  // NEW METHOD: Update files property with new external URLs
+  async updateFilesPropertyExternalUrls(
+    pageId: string,
+    propertyName: string,
+    files: Array<{ name: string; url: string }>
+  ) {
+    const properties: any = {};
+
+    properties[propertyName] = {
+      files: files.map((file) => ({
+        name: file.name,
+        type: 'external',
+        external: {
+          url: file.url,
+        },
+      })),
+    };
+
+    return this.client.pages.update({
+      page_id: pageId,
+      properties,
+    });
+  }
+
+  async updateImageBlockExternalUrl(blockId: string, url: string) {
+    return this.client.blocks.update({
+      block_id: blockId,
+      image: {
+        external: {
+          url,
+        },
+      },
+    });
+  }
+
+  async updatePageCoverExternalUrl(pageId: string, url: string) {
+    return this.client.pages.update({
+      page_id: pageId,
+      cover: {
+        type: 'external',
+        external: {
+          url,
+        },
+      },
+    });
+  }
+
+  async updatePageIconExternalUrl(pageId: string, url: string) {
+    return this.client.pages.update({
+      page_id: pageId,
+      icon: {
+        type: 'external',
+        external: {
+          url,
+        },
+      },
+    });
+  }
 }

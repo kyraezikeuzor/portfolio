@@ -1,41 +1,85 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+// lib/metadata.ts - Create a separate file for metadata logic
+import { Portfolio } from '@/lib/portfolio';
+import {
+  defaultThumbnailUrl,
+  defaultThumbnailAlt,
+  defaultSummary,
+  defaultTitle,
+  siteUrl,
+} from '@/lib/constants';
 
-import Navbar from '@/components/ui/navbar'
-import Footer from '@/components/ui/footer'
+let cachedMetadata: any = null;
 
-import { thumbnailUrl } from '@/lib/constants';
-
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Kyra Ezikeuzor",
-  description: "Student, developer, and writer aspiring to study molecular biology, computer science, cognitive science, and creative writing, aiming for a career in AI medicine research, global health policy, and writing. ",
-  metadataBase: new URL('https://www.kyraezikeuzor.com'),
-  openGraph: {
-    url: 'https://www.kyraezikeuzor.com',
-    type: "website",
-    title: "Kyra Ezikeuzor",
-    description: "Student, developer, and writer aspiring to study molecular biology, computer science, cognitive science, and creative writing, aiming for a career in AI medicine research, global health policy, and writing. ",
-    images: [
-      {
-        url: thumbnailUrl,
-        width: 1200,
-        height: 630,
-        alt: "Pink, red, and orange gradient art",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Kyra Ezikeuzor",
-    description: "Student, developer, and writer aspiring to study molecular biology, computer science, cognitive science, and creative writing, aiming for a career in AI medicine research, global health policy, and writing. ",
-    images: [thumbnailUrl],
+export async function getMetadata() {
+  if (cachedMetadata) {
+    return cachedMetadata;
   }
-};
 
-export default function RootLayout({
+  try {
+    const portfolio = await new Portfolio().getPortfolio();
+    const summary = portfolio.summary.desc;
+    const thumbnail = portfolio.thumbnail;
+
+    cachedMetadata = {
+      summary: summary || defaultSummary,
+      thumbnail: {
+        url: thumbnail.files[0].url || defaultThumbnailUrl,
+        alt: thumbnail.desc || defaultThumbnailAlt,
+      },
+    };
+
+    return cachedMetadata;
+  } catch (error) {
+    console.error('Error fetching metadata:', error);
+    cachedMetadata = {
+      summary: defaultSummary,
+      thumbnailUrl: defaultThumbnailUrl,
+    };
+    return cachedMetadata;
+  }
+}
+
+// layout.tsx
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+
+import Navbar from '@/components/ui/navbar';
+import Footer from '@/components/ui/footer';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { summary, thumbnail } = await getMetadata();
+
+  return {
+    title: defaultTitle,
+    description: summary,
+    metadataBase: new URL(siteUrl),
+    openGraph: {
+      url: siteUrl,
+      type: 'website',
+      title: summary,
+      description: summary,
+      images: [
+        {
+          url: thumbnail.url,
+          width: 1200,
+          height: 630,
+          alt: thumbnail.alt,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: defaultTitle,
+      description: summary,
+      images: [thumbnail.url],
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -43,14 +87,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" type="image/x-icon" href="./favicon.ico"/>
+        <link rel="icon" type="image/x-icon" href="./favicon.ico" />
       </head>
       <body className={inter.className}>
-        <Navbar/>
-        <main className='flex-1 container mx-auto max-w-[680px] p-5'>
+        <Navbar />
+        <main className="flex-1 container mx-auto max-w-[680px] p-5">
           {children}
         </main>
-        <Footer/>
+        <Footer />
       </body>
     </html>
   );

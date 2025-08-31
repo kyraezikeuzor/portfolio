@@ -1,8 +1,8 @@
-import { Text } from '@/schema';
+import { ParsedRichText } from '@/types';
 import Link from 'next/link';
 import { cn } from '@/lib/utils'; // Using your existing utils
 
-export function parser(content: Text[]) {
+export function parser(content: ParsedRichText[]) {
   if (!Array.isArray(content)) return null;
 
   const body = content.map((line, index) => {
@@ -23,6 +23,7 @@ export function parser(content: Text[]) {
         <Link
           key={index}
           href={line.link.url}
+          target="_blank"
           className={cn('underline', styles)}
         >
           {line.text}

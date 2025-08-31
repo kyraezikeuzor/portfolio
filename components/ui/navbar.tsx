@@ -12,21 +12,41 @@ export default function Navbar() {
             <Navigate targetId="work" navigateId="navigateWork" parentPage="/">
               Work
             </Navigate>
-            <Separator orientation="vertical" className='h-3'/>
-            <Navigate targetId="projects" navigateId="navigateProjects" parentPage="/">
+            <Separator orientation="vertical" className="h-3" />
+            <Navigate
+              targetId="projects"
+              navigateId="navigateProjects"
+              parentPage="/"
+            >
               Projects
             </Navigate>
-            <Separator orientation="vertical" className='h-3' />
-            <Navigate targetId="writing" navigateId="navigateWriting" parentPage="/">
+            <Separator orientation="vertical" className="h-3" />
+            <Navigate
+              targetId="writing"
+              navigateId="navigateWriting"
+              parentPage="/"
+            >
               Writing
             </Navigate>
-            <Separator orientation="vertical" className='h-3' />
-            <Navigate targetId="press" navigateId="navigatePress" parentPage="/">
+            <Separator orientation="vertical" className="h-3" />
+            <Navigate
+              targetId="press"
+              navigateId="navigatePress"
+              parentPage="/"
+            >
               Press
             </Navigate>
+            <Separator orientation="vertical" className="h-3" />
+            <Navigate
+              targetId="awards"
+              navigateId="navigateAwards"
+              parentPage="/"
+            >
+              Awards
+            </Navigate>
           </div>
-          <br/>
-          <Theme/>
+          <br />
+          <Theme />
         </div>
       </div>
     </nav>
