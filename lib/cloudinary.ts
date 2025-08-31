@@ -3,7 +3,6 @@ import { v2 as cloudinary } from 'cloudinary';
 export async function config({
   cloudinaryUrl,
 }: {
-  // cloudinary://API_KEY:API_SECRET@CLOUD_NAME
   cloudinaryUrl: string;
 }) {
   const urlRegex = /^cloudinary:\/\/([a-z0-9-_]+):([a-z0-9-_]+)@([a-z0-9-_]+)$/i;
