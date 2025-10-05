@@ -23,7 +23,7 @@ const Headline = ({
   headline: PortfolioDatabase['headline'];
 }) => {
   return (
-    <div className="w-full text-lg tracking-tight text-neutral-700 dark:text-neutral-200">
+    <div className="w-full text-lg -tracking-[0.0175em] text-neutral-700 dark:text-neutral-200">
       {parser(headline.desc)}
     </div>
   );
@@ -35,7 +35,7 @@ const Postscript = ({
   postscript: PortfolioDatabase['postscript'];
 }) => {
   return (
-    <div className="w-full text-sm tracking-tight text-neutral-500 dark:text-neutral-400">
+    <div className="w-full text-sm text-neutral-500 dark:text-neutral-400">
       {parser(postscript.desc)}
     </div>
   );
@@ -156,7 +156,7 @@ const Work = ({ positions }: { positions: PortfolioDatabase['positions'] }) => {
                     src={item.files[0]?.url || ''}
                     alt={`${item.name} logo`}
                   />
-                  <span className="tracking-tight text-base whitespace-nowrap">
+                  <span className="-tracking-[0.0175em] text-base whitespace-nowrap">
                     {item.group}
                   </span>
                 </Link>
@@ -172,11 +172,11 @@ const Work = ({ positions }: { positions: PortfolioDatabase['positions'] }) => {
                   </span>
                 </div>
               )}
-              <span className="tracking-tight text-[14px] truncate whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+              <span className="text-[14px] tracking-normal truncate whitespace-nowrap text-neutral-500 dark:text-neutral-400">
                 {item.name}
               </span>
             </div>
-            <span className="tracking-tight text-[14px] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+            <span className="text-[14px] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
               {formatTimespanFromDate(item.startDate, item.endDate)}
             </span>
           </div>
@@ -207,7 +207,7 @@ const Projects = ({
                   {formatYearFromDate(item.startDate)}
                 </span>
               </div>
-              <div className="text-[14px] tracking-tight text-neutral-500 dark:text-neutral-400">
+              <div className="text-[14px] tracking-[.000125em] text-neutral-500 dark:text-neutral-400">
                 {parser(item.desc)}
               </div>
             </div>
@@ -251,7 +251,7 @@ const Writing = ({ writing }: { writing: PortfolioDatabase['writing'] }) => {
                   {formatYearFromDate(item.datePublished)}
                 </span>
               </div>
-              <div className="text-[14px] tracking-tight text-neutral-500 dark:text-neutral-400">
+              <div className="text-[14px] tracking-[.000125em] text-neutral-500 dark:text-neutral-400">
                 {parser(item.desc)}
               </div>
               <div className="text-xs mt-[2px] text-neutral-500 dark:text-neutral-400 underline decoration-[1px] underline-offset-1 decoration-neutral-400 mr-[3px] tracking-tight text-neutral-500 dark:text-neutral-400">
@@ -303,7 +303,7 @@ const Awards = ({ awards }: { awards: PortfolioDatabase['awards'] }) => {
                       {formatYearFromDate(item.dateReceived)}
                     </span>
                   </span>
-                  <div className="text-[14px] tracking-tight text-neutral-500 dark:text-neutral-400">
+                  <div className="text-[14px] tracking-[.000125em] text-neutral-500 dark:text-neutral-400">
                     {parser(item.desc)}
                   </div>
                 </div>
@@ -351,14 +351,14 @@ const Press = ({ press }: { press: PortfolioDatabase['press'] }) => {
               href={item.link}
               target="_blank"
               key={index}
-              className="text-sm text-neutral-500 dark:text-neutral-400 underline decoration-[1px] underline-offset-1 decoration-neutral-400 mr-[3px] tracking-tight hover:opacity-75"
+              className="text-sm tracking-[.000125em] text-neutral-500 dark:text-neutral-400 underline decoration-[1px] underline-offset-1 decoration-neutral-400 mr-[3px] hover:opacity-75"
             >
               {content}
             </Link>
           ) : (
             <div
               key={index}
-              className="text-sm text-neutral-500 dark:text-neutral-400 mr-[3px] tracking-tight"
+              className="text-sm tracking-[.000125em] text-neutral-500 dark:text-neutral-400 mr-[3px]"
             >
               {content}
             </div>
