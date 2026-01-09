@@ -9,25 +9,6 @@ import {
 } from '@/lib/utils';
 import { ExternalLink, Link as LinkIcon, Mail } from 'lucide-react';
 
-const About = ({ about }: { about: PortfolioDatabase['about'] }) => {
-  return (
-    <section className="text-lg tracking-tight text-neutral-700 dark:text-neutral-200">
-      {parser(about.desc)}
-    </section>
-  );
-};
-
-const Headline = ({
-  headline,
-}: {
-  headline: PortfolioDatabase['headline'];
-}) => {
-  return (
-    <div className="w-full text-lg -tracking-[0.0175em] text-neutral-700 dark:text-neutral-200">
-      {parser(headline.desc)}
-    </div>
-  );
-};
 
 const Postscript = ({
   postscript,
@@ -35,7 +16,7 @@ const Postscript = ({
   postscript: PortfolioDatabase['postscript'];
 }) => {
   return (
-    <div className="w-full text-sm text-neutral-500 dark:text-neutral-400">
+    <div className="w-full -tracking-[0.005em] font-[350] text-neutral-500 text-neutral-500 dark:text-neutral-400">
       {parser(postscript.desc)}
     </div>
   );
@@ -134,13 +115,53 @@ const Socials = ({ socials }: { socials: PortfolioDatabase['socials'] }) => {
   );
 };
 
+const Headline = ({
+  headline,
+}: {
+  headline: PortfolioDatabase['headline'];
+}) => {
+  return (
+    <div className="w-full text-lg tracking-tight text-neutral-700 dark:text-neutral-200">
+      {parser(headline.desc)}
+    </div>
+  );
+};
+
+const About = ({ about }: { about: PortfolioDatabase['about'] }) => {
+  return (
+    <section className="text-lg tracking-tight text-neutral-700 dark:text-neutral-200">
+      {parser(about.desc)}
+    </section>
+  );
+};
+
+
 const Work = ({ positions }: { positions: PortfolioDatabase['positions'] }) => {
   return (
     <section id="work" className="flex flex-col">
       <h2 className="text-xl mb-3 tracking-tight">Work</h2>
       <div className="flex flex-col divide-y divide-dashed divide-neutral-200 dark:divide-neutral-700 border-y border-dashed border-neutral-200 dark:border-neutral-700">
-        {positions.map((item, index) => (
-          <div
+        {positions.map((item, index) => {
+          const content = (
+            <>
+              <div className="flex flex-row items-center gap-2">
+                <img
+                  className="rounded-sm w-6 h-6"
+                  src={item.files[0]?.url || ''}
+                  alt={`${item.name} logo`}
+                />
+                <span className="-tracking-[0.005em] text-base whitespace-nowrap">
+                  {item.group}
+                </span>
+              </div>
+              <span className=" -tracking-[0.005em] text-base font-[350] text-ellipsis whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+                {item.name}
+              </span>
+            </>
+
+          )
+
+          return <div
             key={index}
             className="w-full flex flex-row items-center justify-between py-2"
           >
@@ -149,38 +170,23 @@ const Work = ({ positions }: { positions: PortfolioDatabase['positions'] }) => {
                 <Link
                   href={item.link}
                   target="_blank"
-                  className="flex flex-row items-center gap-2 flex-shrink-0"
+                  className="flex flex-col xs:flex-row items-start xs:items-center xs:gap-2 gap-1 flex-shrink-0"
                 >
-                  <img
-                    className="rounded-sm w-6 h-6"
-                    src={item.files[0]?.url || ''}
-                    alt={`${item.name} logo`}
-                  />
-                  <span className="-tracking-[0.0175em] text-base whitespace-nowrap">
-                    {item.group}
-                  </span>
+                  {content}
                 </Link>
               ) : (
-                <div className="flex flex-row items-center gap-2 flex-shrink-0">
-                  <img
-                    className="rounded-sm w-6 h-6"
-                    src={item.files[0]?.url || ''}
-                    alt={`${item.name} logo`}
-                  />
-                  <span className="tracking-tight text-base whitespace-nowrap">
-                    {item.group}
-                  </span>
+                <div className="flex flex-col xs:flex-row items-start xs:items-center xs:gap-2 gap-1 flex-shrink-0">
+                  {content}
                 </div>
               )}
-              <span className="text-[14px] tracking-normal truncate whitespace-nowrap text-neutral-500 dark:text-neutral-400">
-                {item.name}
-              </span>
             </div>
-            <span className="text-[14px] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+            <span className="-mt-7 xs:mt-0 text-sm -tracking-[0.005em] font-[350] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
               {formatTimespanFromDate(item.startDate, item.endDate)}
             </span>
           </div>
-        ))}
+
+        })}
+
       </div>
     </section>
   );
@@ -199,15 +205,15 @@ const Projects = ({
           const content = (
             <div
               key={index}
-              className="border border-neutral-200 dark:border-neutral-700 p-3 rounded-xl"
+              className="border border-neutral-200 dark:border-neutral-700 p-3 rounded-xl text-base -tracking-[0.005em]"
             >
-              <div className="flex flex-row gap-2 items-center tracking-tight">
+              <div className="flex flex-row gap-2 items-center ">
                 <span>{item.name}</span>
-                <span className="text-[15px] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+                <span className="text-sm -tracking-[0.005em] font-[350] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
                   {formatYearFromDate(item.startDate)}
                 </span>
               </div>
-              <div className="text-[14px] tracking-[.000125em] text-neutral-500 dark:text-neutral-400">
+              <div className="font-[350] text-neutral-500 dark:text-neutral-400">
                 {parser(item.desc)}
               </div>
             </div>
@@ -240,21 +246,21 @@ const Writing = ({ writing }: { writing: PortfolioDatabase['writing'] }) => {
         {writing.map((item, index) => {
           const content = (
             <div key={index} className="flex flex-col px-2 py-3 cursor-pointer">
-              <div className="flex flex-row gap-2 items-center tracking-tight">
-                <span>
+              <div className="flex flex-row gap-2 items-center text-base -tracking-[0.005em]">
+                <span className='md:truncate'>
                   {item.name}
-                  <span className="ml-2 inline lg:hidden text-[15px] text-neutral-500 dark:text-neutral-400">
+                  <span className="ml-2 inline lg:hidden text-sm -tracking-[0.005em] font-[350] text-neutral-500 dark:text-neutral-400">
                     {formatYearFromDate(item.datePublished)}
                   </span>
                 </span>
-                <span className="hidden lg:block text-[15px] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+                <span className="hidden lg:block text-sm -tracking-[0.005em] font-[350] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
                   {formatYearFromDate(item.datePublished)}
                 </span>
               </div>
-              <div className="text-[14px] tracking-[.000125em] text-neutral-500 dark:text-neutral-400">
+              <div className="text-base -tracking-[0.005em] font-[350] text-neutral-500 dark:text-neutral-400">
                 {parser(item.desc)}
               </div>
-              <div className="text-xs mt-[2px] text-neutral-500 dark:text-neutral-400 underline decoration-[1px] underline-offset-1 decoration-neutral-400 mr-[3px] tracking-tight text-neutral-500 dark:text-neutral-400">
+              <div className="hidden text-xs mt-[2px] text-neutral-500 dark:text-neutral-400 underline decoration-[1px] underline-offset-1 decoration-neutral-400 mr-[3px] tracking-tight text-neutral-500 dark:text-neutral-400">
                 {extractSiteNameFromUrl(item.link)}
               </div>
             </div>
@@ -268,7 +274,7 @@ const Writing = ({ writing }: { writing: PortfolioDatabase['writing'] }) => {
               className="relative hover:bg-neutral-50 dark:hover:bg-neutral-900 cursor-pointer"
             >
               {content}
-              <ExternalLink className="w-4 h-4 absolute top-[14px] right-3 opacity-50" />
+              <ExternalLink className="w-4 h-4 absolute top-[12px] right-3 opacity-50" />
             </Link>
           ) : (
             content
@@ -288,22 +294,22 @@ const Awards = ({ awards }: { awards: PortfolioDatabase['awards'] }) => {
           const content = (
             <div
               key={index}
-              className="px-2 py-2 flex flex-row items-center justify-between gap-1"
+              className="px-2 py-3 flex flex-row items-center justify-between gap-1"
             >
               <div className="flex flex-row items-center">
                 <div className="flex flex-col">
-                  <span className="text-[15px] flex flex-row items-center gap-1 tracking-tight">
+                  <span className="flex flex-row items-center gap-1 text-base -tracking-[0.005em]">
                     <span>
                       {item.name}
-                      <span className="ml-2 inline lg:hidden text-[15px] text-neutral-500 dark:text-neutral-400">
+                      <span className="ml-2 inline lg:hidden text-sm -tracking-[0.005em] font-[350] text-neutral-500 dark:text-neutral-400">
                         {formatYearFromDate(item.dateReceived)}
                       </span>
                     </span>
-                    <span className="hidden lg:block ml-1 text-[15px] tracking-tight text-neutral-500 dark:text-neutral-400">
+                    <span className="hidden lg:block ml-1 text-sm -tracking-[0.005em] font-[350] text-neutral-500 dark:text-neutral-400">
                       {formatYearFromDate(item.dateReceived)}
                     </span>
                   </span>
-                  <div className="text-[14px] tracking-[.000125em] text-neutral-500 dark:text-neutral-400">
+                  <div className="font-[350] text-neutral-500 dark:text-neutral-400">
                     {parser(item.desc)}
                   </div>
                 </div>
@@ -319,7 +325,7 @@ const Awards = ({ awards }: { awards: PortfolioDatabase['awards'] }) => {
               target="_blank"
             >
               {content}
-              <ExternalLink className="w-4 h-4 absolute top-[10px] right-3 opacity-50" />
+              <ExternalLink className="w-4 h-4 absolute top-[14px] right-3 opacity-50" />
             </Link>
           ) : (
             content
@@ -335,13 +341,13 @@ const Press = ({ press }: { press: PortfolioDatabase['press'] }) => {
     <section id="press">
       <h2 className="text-xl mb-3 tracking-tight">Press</h2>
       <Separator />
-      <div className="flex flex-row flex-wrap py-3">
+      <div className="flex flex-row flex-wrap px-2 py-3">
         {press.map((item, index) => {
           const content = (
             <span>
               {item.group}
-              {/* {item.datePublished &&
-                ` ${formatYearFromDate(item.datePublished)}`} */}
+              {/*item.datePublished &&
+                ` ${formatYearFromDate(item.datePublished)}`*/}
               {index + 1 != press.length && ', '}
             </span>
           );
@@ -351,14 +357,14 @@ const Press = ({ press }: { press: PortfolioDatabase['press'] }) => {
               href={item.link}
               target="_blank"
               key={index}
-              className="text-sm tracking-[.000125em] text-neutral-500 dark:text-neutral-400 underline decoration-[1px] underline-offset-1 decoration-neutral-400 mr-[3px] hover:opacity-75"
+              className="text-base -tracking-[0.005em] font-[350] text-neutral-500 dark:text-neutral-400 underline decoration-[1px] underline-offset-1 decoration-neutral-400 mr-[3px] hover:opacity-75"
             >
               {content}
             </Link>
           ) : (
             <div
               key={index}
-              className="text-sm tracking-[.000125em] text-neutral-500 dark:text-neutral-400 mr-[3px]"
+              className="text-base -tracking-[0.005em] font-[350] text-neutral-500 dark:text-neutral-400 mr-[3px]"
             >
               {content}
             </div>
