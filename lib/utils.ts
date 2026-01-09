@@ -18,11 +18,11 @@ export function toPathFromText(text: string) {
 export function formatTimespanFromDate(startDate: string, endDate: string) {
   // Handle missing dates
   if (!startDate && !endDate) {
-    return 'Present';
+    return 'Now';
   }
 
   if (!startDate) {
-    return 'Present';
+    return 'Now';
   }
 
   const formattedStartDate = new Date(startDate).toLocaleDateString('en-US', {
@@ -35,7 +35,7 @@ export function formatTimespanFromDate(startDate: string, endDate: string) {
 
   // If endDate doesn't exist, it means the timespan is ongoing
   if (!endDate) {
-    return `${formattedStartDate}-Present`;
+    return `${formattedStartDate}-Now`;
   }
 
   // If both dates are the same, just return a single year
