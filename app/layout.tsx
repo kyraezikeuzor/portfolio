@@ -91,7 +91,7 @@ export default async function RootLayout({
       </head>
       <body className={inter.className}>
         <Navbar />
-        <main className="flex-1 container mx-auto max-w-[680px] p-5">
+        <main className="flex-1 container mx-auto max-w-[700px] p-5">
           {children}
         </main>
         <Footer />
