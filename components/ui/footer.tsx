@@ -14,8 +14,8 @@ export default async function Footer() {
         <br />
         <Signature />
         <Postscript postscript={portfolio.postscript} />
-        <span className="self-start text-neutral-500 dark:text-neutral-400 text-xs">
-          © Made in Texas.
+        <span className="self-start text-sm -tracking-[0.005em] text-neutral-500 dark:text-neutral-400">
+          © Made in Texas
         </span>
       </div>
     </div>
