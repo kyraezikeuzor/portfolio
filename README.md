@@ -4,11 +4,9 @@ A Next.js portfolio website that dynamically pulls content from a Notion databas
 
 ## Features
 
-- 📝 Content managed through Notion database
-- 🖼️ Automatic image upload to Cloudinary
-- 🔄 Automatic revalidation when Notion content changes
-- ⚡ Fast, server-rendered pages with Next.js
-- 🎨 Modern UI with Tailwind CSS
+- Content managed through Notion database
+- Automatic image upload to Cloudinary
+- Automatic revalidation when Notion content changes
 
 ## Prerequisites
 
