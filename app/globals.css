@@ -1,9 +1,8 @@
 @layer base {
   :root {
     --radius: 0.5rem;
-    --clr-base: #fff;
+    --clr-base: #fafafa; 
     --clr-base-text: #353232;
-    --clr-blue-base:#6182FF;
     --navbar-height: 72px;  /* Adjust this value based on your navbar height */
     --footer-height: 60px;  /* Adjust this value based on your footer height */
   }
@@ -11,7 +10,6 @@
   :root.dark {
     --clr-base: #121213;
     --clr-base-text: #F9F8F8;
-    --clr-blue-base: #6182FF;
   }
 }
 
