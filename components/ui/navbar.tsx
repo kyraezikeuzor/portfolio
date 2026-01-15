@@ -36,7 +36,6 @@ export default function Navbar() {
             >
               Press
             </Navigate>
-            <Separator orientation="vertical" className="h-3" />
           </div>
           <br />
           <Theme />
