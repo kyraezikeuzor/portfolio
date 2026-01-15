@@ -39,7 +39,6 @@ export default async function Home() {
       <Projects projects={portfolio.projects} />
       <Writing writing={portfolio.writing} />
       <Press press={portfolio.press} />
-      <Awards awards={portfolio.awards} />
     </section>
   );
 }
