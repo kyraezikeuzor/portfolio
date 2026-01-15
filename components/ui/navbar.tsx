@@ -37,13 +37,6 @@ export default function Navbar() {
               Press
             </Navigate>
             <Separator orientation="vertical" className="h-3" />
-            <Navigate
-              targetId="awards"
-              navigateId="navigateAwards"
-              parentPage="/"
-            >
-              Awards
-            </Navigate>
           </div>
           <br />
           <Theme />
