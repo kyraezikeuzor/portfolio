@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import Theme from './theme';
 import { Separator } from '@/components/ui/separator';
 import { Navigate } from '@/components/ui/navigate';
@@ -13,13 +14,9 @@ export default function Navbar() {
               Work
             </Navigate>
             <Separator orientation="vertical" className="h-3" />
-            <Navigate
-              targetId="projects"
-              navigateId="navigateProjects"
-              parentPage="/"
-            >
+            <Link href="/projects" className="hover:opacity-75">
               Projects
-            </Navigate>
+            </Link>
             <Separator orientation="vertical" className="h-3" />
             <Navigate
               targetId="writing"

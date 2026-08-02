@@ -6,6 +6,7 @@ import {
   formatYearFromDate,
   formatTimespanFromDate,
   extractSiteNameFromUrl,
+  toSlug,
 } from '@/lib/utils';
 import { ExternalLink, Link as LinkIcon, Mail } from 'lucide-react';
 import { typography } from '@/lib/typography';
@@ -214,43 +215,33 @@ const Work = ({ positions }: { positions: PortfolioDatabase['positions'] }) => {
 
 const Projects = ({
   projects,
+  description,
 }: {
   projects: PortfolioDatabase['projects'];
+  description?: string;
 }) => {
   return (
     <section id="projects" className="flex flex-col">
       <h2 className={typography.sectionTitle}>Projects</h2>
+      {description ? (
+        <p className={`-mt-1 mb-3 ${typography.itemDesc}`}>{description}</p>
+      ) : null}
       <div className="flex flex-col md:grid grid-cols-2 gap-3">
-        {projects.map((item, index) => {
-          const content = (
-            <div
-              key={index}
-              className="border-2 border-neutral-200 dark:border-neutral-700 p-3 rounded-xl text-base -tracking-[0.005em]"
-            >
-              <div className="flex flex-row gap-2 items-center ">
-                <span className={typography.itemTitle}>{item.name}</span>
-                <span className={`-tracking-[0.005em] ${typography.itemDate}`}>
-                  {formatYearFromDate(item.startDate)}
-                </span>
-              </div>
-              <div className={typography.itemDesc}>{parser(item.desc)}</div>
+        {projects.map((item, index) => (
+          <Link
+            key={index}
+            href={`/projects/${toSlug(item.name)}`}
+            className="border-2 border-neutral-200 dark:border-neutral-700 p-3 rounded-xl hover:p-4 transition-all duration-300 cursor-pointer hover:border-blue-400 dark:hover:border-blue-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
+          >
+            <div className="flex flex-row gap-2 items-center">
+              <span className={typography.itemTitle}>{item.name}</span>
+              <span className={`-tracking-[0.005em] ${typography.itemDate}`}>
+                {formatYearFromDate(item.startDate)}
+              </span>
             </div>
-          );
-
-          return item.link && item.link !== '' ? (
-            <Link
-              className="relative hover:bg-neutral-50 dark:hover:bg-neutral-900 cursor-pointer"
-              href={item.link}
-              target="_blank"
-              key={index}
-            >
-              {content}
-              <ExternalLink className="w-4 h-4 absolute top-[14px] right-3 opacity-50" />
-            </Link>
-          ) : (
-            content
-          );
-        })}
+            <div className={typography.itemDesc}>{parser(item.desc)}</div>
+          </Link>
+        ))}
       </div>
     </section>
   );
