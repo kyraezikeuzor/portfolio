@@ -8,7 +8,8 @@ import {
   extractSiteNameFromUrl,
 } from '@/lib/utils';
 import { ExternalLink, Link as LinkIcon, Mail } from 'lucide-react';
-
+import { typography } from '@/lib/typography';
+import { defaultPortraitUrl } from '@/lib/constants';
 
 const Postscript = ({
   postscript,
@@ -16,7 +17,7 @@ const Postscript = ({
   postscript: PortfolioDatabase['postscript'];
 }) => {
   return (
-    <div className="w-full -tracking-[0.005em] font-[350] text-neutral-500 text-neutral-500 dark:text-neutral-400">
+    <div className={`w-full ${typography.itemDesc}`}>
       {parser(postscript.desc)}
     </div>
   );
@@ -120,27 +121,47 @@ const Headline = ({
 }: {
   headline: PortfolioDatabase['headline'];
 }) => {
+  return <div className={`w-full ${typography.bodyText}`}>{parser(headline.desc)}</div>;
+};
+
+const Header = ({
+  portrait,
+  headline,
+  socials,
+}: {
+  portrait: PortfolioDatabase['portrait'];
+  headline: PortfolioDatabase['headline'];
+  socials: PortfolioDatabase['socials'];
+}) => {
   return (
-    <div className="w-full text-lg tracking-tight text-neutral-700 dark:text-neutral-200">
-      {parser(headline.desc)}
-    </div>
+    <header className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+      <img
+        className="w-32 h-fit sm:w-32 sm:h-32 rounded-full"
+        src={portrait.files[0]?.url || defaultPortraitUrl}
+        alt={portrait.desc || 'Picture of me'}
+      />
+      <div className="flex flex-col items-start gap-2">
+        <div className="flex flex-col items-start gap-1">
+          <h1 className="text-4xl font-semibold tracking-tight text-neutral-600 dark:text-neutral-300">
+            Kyra Ezikeuzor
+          </h1>
+          <Headline headline={headline} />
+        </div>
+        <Socials socials={socials} />
+      </div>
+    </header>
   );
 };
 
 const About = ({ about }: { about: PortfolioDatabase['about'] }) => {
-  return (
-    <section className="text-lg tracking-tight text-neutral-700 dark:text-neutral-200">
-      {parser(about.desc)}
-    </section>
-  );
+  return <section className={typography.bodyText}>{parser(about.desc)}</section>;
 };
-
 
 const Work = ({ positions }: { positions: PortfolioDatabase['positions'] }) => {
   return (
     <section id="work" className="flex flex-col">
-      <h2 className="text-xl mb-3 tracking-tight">Work</h2>
-      <div className="flex flex-col divide-y divide-dashed divide-neutral-200 dark:divide-neutral-700 border-y border-dashed border-neutral-200 dark:border-neutral-700">
+      <h2 className={typography.sectionTitle}>Work</h2>
+      <div className="flex flex-col divide-y-2 divide-dashed divide-neutral-200 dark:divide-neutral-700 border-y-2 border-dashed border-neutral-200 dark:border-neutral-700">
         {positions.map((item, index) => {
           const content = (
             <>
@@ -150,43 +171,42 @@ const Work = ({ positions }: { positions: PortfolioDatabase['positions'] }) => {
                   src={item.files[0]?.url || ''}
                   alt={`${item.name} logo`}
                 />
-                <span className="-tracking-[0.005em] text-base whitespace-nowrap">
+                <span className={`${typography.itemTitle} whitespace-nowrap`}>
                   {item.group}
                 </span>
               </div>
-              <span className=" -tracking-[0.005em] text-base font-[350] text-ellipsis whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+              <span className={`${typography.itemMeta} text-ellipsis whitespace-nowrap`}>
                 {item.name}
               </span>
             </>
+          );
 
-          )
-
-          return <div
-            key={index}
-            className="w-full flex flex-row items-center justify-between py-2"
-          >
-            <div className="flex flex-row items-center gap-2 w-full min-w-0">
-              {item.link && item.link !== '' ? (
-                <Link
-                  href={item.link}
-                  target="_blank"
-                  className="flex flex-col xs:flex-row items-start xs:items-center xs:gap-2 gap-1 flex-shrink-0"
-                >
-                  {content}
-                </Link>
-              ) : (
-                <div className="flex flex-col xs:flex-row items-start xs:items-center xs:gap-2 gap-1 flex-shrink-0">
-                  {content}
-                </div>
-              )}
+          return (
+            <div
+              key={index}
+              className="w-full flex flex-row items-center justify-between py-2"
+            >
+              <div className="flex flex-row items-center gap-2 w-full min-w-0">
+                {item.link && item.link !== '' ? (
+                  <Link
+                    href={item.link}
+                    target="_blank"
+                    className="flex flex-col xs:flex-row items-start xs:items-center xs:gap-2 gap-1 flex-shrink-0"
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  <div className="flex flex-col xs:flex-row items-start xs:items-center xs:gap-2 gap-1 flex-shrink-0">
+                    {content}
+                  </div>
+                )}
+              </div>
+              <span className={`-mt-7 xs:mt-0 ${typography.itemDate}`}>
+                {formatTimespanFromDate(item.startDate, item.endDate)}
+              </span>
             </div>
-            <span className="-mt-7 xs:mt-0 text-sm -tracking-[0.005em] font-[350] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
-              {formatTimespanFromDate(item.startDate, item.endDate)}
-            </span>
-          </div>
-
+          );
         })}
-
       </div>
     </section>
   );
@@ -199,23 +219,21 @@ const Projects = ({
 }) => {
   return (
     <section id="projects" className="flex flex-col">
-      <h2 className="text-xl mb-3 tracking-tight">Projects</h2>
+      <h2 className={typography.sectionTitle}>Projects</h2>
       <div className="flex flex-col md:grid grid-cols-2 gap-3">
         {projects.map((item, index) => {
           const content = (
             <div
               key={index}
-              className="border border-neutral-200 dark:border-neutral-700 p-3 rounded-xl text-base -tracking-[0.005em]"
+              className="border-2 border-neutral-200 dark:border-neutral-700 p-3 rounded-xl text-base -tracking-[0.005em]"
             >
               <div className="flex flex-row gap-2 items-center ">
-                <span>{item.name}</span>
-                <span className="text-sm -tracking-[0.005em] font-[350] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+                <span className={typography.itemTitle}>{item.name}</span>
+                <span className={`-tracking-[0.005em] ${typography.itemDate}`}>
                   {formatYearFromDate(item.startDate)}
                 </span>
               </div>
-              <div className="font-[350] text-neutral-500 dark:text-neutral-400">
-                {parser(item.desc)}
-              </div>
+              <div className={typography.itemDesc}>{parser(item.desc)}</div>
             </div>
           );
 
@@ -241,26 +259,24 @@ const Projects = ({
 const Writing = ({ writing }: { writing: PortfolioDatabase['writing'] }) => {
   return (
     <section id="writing" className="flex flex-col">
-      <h2 className="text-xl mb-3 tracking-tight">Writing</h2>
-      <div className="flex flex-col divide-y divide-dashed divide-neutral-200 dark:divide-neutral-700 border-y border-dashed border-neutral-200 dark:border-neutral-700">
+      <h2 className={typography.sectionTitle}>Writing</h2>
+      <div className="flex flex-col divide-y-2 divide-dashed divide-neutral-200 dark:divide-neutral-700 border-y-2 border-dashed border-neutral-200 dark:border-neutral-700">
         {writing.map((item, index) => {
           const content = (
             <div key={index} className="flex flex-col px-2 py-3 cursor-pointer">
-              <div className="flex flex-row gap-2 items-center text-base -tracking-[0.005em]">
-                <span className='md:truncate'>
+              <div className="flex flex-row gap-2 items-center text-base">
+                <span className={typography.itemTitle + " md:truncate"}>
                   {item.name}
-                  <span className="ml-2 inline lg:hidden text-sm -tracking-[0.005em] font-[350] text-neutral-500 dark:text-neutral-400">
+                  <span className={`ml-2 inline lg:hidden ${typography.itemDate}`}>
                     {formatYearFromDate(item.datePublished)}
                   </span>
                 </span>
-                <span className="hidden lg:block text-sm -tracking-[0.005em] font-[350] whitespace-nowrap text-neutral-500 dark:text-neutral-400">
+                <span className={`hidden lg:block ${typography.itemDate}`}>
                   {formatYearFromDate(item.datePublished)}
                 </span>
               </div>
-              <div className="text-base -tracking-[0.005em] font-[350] text-neutral-500 dark:text-neutral-400">
-                {parser(item.desc)}
-              </div>
-              <div className="hidden text-xs mt-[2px] text-neutral-500 dark:text-neutral-400 underline decoration-[1px] underline-offset-1 decoration-neutral-400 mr-[3px] tracking-tight text-neutral-500 dark:text-neutral-400">
+              <div className={typography.itemDesc}>{parser(item.desc)}</div>
+              <div className="text-sm mt-[2px] text-neutral-500 dark:text-neutral-400 underline decoration-[1px] underline-offset-1 decoration-neutral-400 mr-[3px]">
                 {extractSiteNameFromUrl(item.link)}
               </div>
             </div>
@@ -288,7 +304,7 @@ const Writing = ({ writing }: { writing: PortfolioDatabase['writing'] }) => {
 const Awards = ({ awards }: { awards: PortfolioDatabase['awards'] }) => {
   return (
     <section id="awards">
-      <h2 className="text-xl mb-3 tracking-tight">Awards</h2>
+      <h2 className={typography.sectionTitle}>Awards</h2>
       <div className="flex flex-col divide-y divide-dashed divide-neutral-200 dark:divide-neutral-700 border-y border-dashed border-neutral-200 dark:border-neutral-700">
         {awards.map((item, index) => {
           const content = (
@@ -298,20 +314,18 @@ const Awards = ({ awards }: { awards: PortfolioDatabase['awards'] }) => {
             >
               <div className="flex flex-row items-center">
                 <div className="flex flex-col">
-                  <span className="flex flex-row items-center gap-1 text-base -tracking-[0.005em]">
+                  <span className={`flex flex-row items-center gap-1 ${typography.itemTitle} -tracking-[0.005em]`}>
                     <span>
                       {item.name}
-                      <span className="ml-2 inline lg:hidden text-sm -tracking-[0.005em] font-[350] text-neutral-500 dark:text-neutral-400">
+                      <span className={`ml-2 inline lg:hidden -tracking-[0.005em] ${typography.itemDate}`}>
                         {formatYearFromDate(item.dateReceived)}
                       </span>
                     </span>
-                    <span className="hidden lg:block ml-1 text-sm -tracking-[0.005em] font-[350] text-neutral-500 dark:text-neutral-400">
+                    <span className={`hidden lg:block ml-1 -tracking-[0.005em] ${typography.itemDate}`}>
                       {formatYearFromDate(item.dateReceived)}
                     </span>
                   </span>
-                  <div className="font-[350] text-neutral-500 dark:text-neutral-400">
-                    {parser(item.desc)}
-                  </div>
+                  <div className={typography.itemDesc}>{parser(item.desc)}</div>
                 </div>
               </div>
             </div>
@@ -339,15 +353,13 @@ const Awards = ({ awards }: { awards: PortfolioDatabase['awards'] }) => {
 const Press = ({ press }: { press: PortfolioDatabase['press'] }) => {
   return (
     <section id="press">
-      <h2 className="text-xl mb-3 tracking-tight">Press</h2>
+      <h2 className={typography.sectionTitle}>Press</h2>
       <Separator />
       <div className="flex flex-row flex-wrap px-2 py-3">
         {press.map((item, index) => {
           const content = (
             <span>
               {item.group}
-              {/*item.datePublished &&
-                ` ${formatYearFromDate(item.datePublished)}`*/}
               {index + 1 != press.length && ', '}
             </span>
           );
@@ -377,6 +389,7 @@ const Press = ({ press }: { press: PortfolioDatabase['press'] }) => {
 
 export {
   About,
+  Header,
   Headline,
   Postscript,
   Socials,
