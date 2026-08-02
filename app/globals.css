@@ -1,7 +1,7 @@
 @layer base {
   :root {
     --radius: 0.5rem;
-    --clr-base: #fafafa; 
+    --clr-base: #fff;  /* #fafafa */
     --clr-base-text: #353232;
     --navbar-height: 72px;  /* Adjust this value based on your navbar height */
     --footer-height: 60px;  /* Adjust this value based on your footer height */
