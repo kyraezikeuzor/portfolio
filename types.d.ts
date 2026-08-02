@@ -54,6 +54,7 @@ export interface PortfolioDatabase {
     startDate: string;
     endDate: string;
     group: string;
+    files: ParsedFile[];
   }[];
   socials: {
     id: string;

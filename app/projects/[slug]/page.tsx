@@ -54,6 +54,18 @@ export default async function ProjectPage({
           <ExternalLink className="w-3.5 h-3.5 opacity-50" />
         </Link>
       ) : null}
+      {project.files.length > 0 ? (
+        <div className="flex flex-col gap-3 mt-2">
+          {project.files.map((file) => (
+            <img
+              key={file.url}
+              src={file.url}
+              alt={file.name || `${project.name} image`}
+              className="w-full h-auto rounded-xl border-2 border-neutral-200 dark:border-neutral-700"
+            />
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }

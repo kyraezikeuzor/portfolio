@@ -162,6 +162,7 @@ export class Portfolio {
             startDate: parsedPage.startDate,
             endDate: parsedPage.endDate,
             group: parsedPage.group,
+            files: parsedPage.files,
           });
           break;
         case 'social':
