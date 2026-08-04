@@ -227,21 +227,38 @@ const Projects = ({
         <p className={`-mt-1 mb-3 ${typography.itemDesc}`}>{description}</p>
       ) : null}
       <div className="flex flex-col md:grid grid-cols-2 gap-3">
-        {projects.map((item, index) => (
-          <Link
-            key={index}
-            href={`/projects/${toSlug(item.name)}`}
-            className="border-2 border-neutral-200 dark:border-neutral-700 p-3 rounded-xl hover:p-4 transition-all duration-300 cursor-pointer hover:border-blue-400 dark:hover:border-blue-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
-          >
-            <div className="flex flex-row gap-2 items-center">
-              <span className={typography.itemTitle}>{item.name}</span>
-              <span className={`-tracking-[0.005em] ${typography.itemDate}`}>
-                {formatYearFromDate(item.startDate)}
-              </span>
-            </div>
-            <div className={typography.itemDesc}>{parser(item.desc)}</div>
-          </Link>
-        ))}
+        {projects.map((item, index) => {
+          const coverImage = item.files?.[0];
+
+          return (
+            <Link
+              key={index}
+              href={`/projects/${toSlug(item.name)}`}
+              className={
+                coverImage
+                  ? 'flex flex-col overflow-hidden border-2 border-neutral-200 dark:border-neutral-700 rounded-xl transition-all duration-300 cursor-pointer hover:border-blue-400 dark:hover:border-blue-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                  : 'border-2 border-neutral-200 dark:border-neutral-700 p-3 rounded-xl hover:p-4 transition-all duration-300 cursor-pointer hover:border-blue-400 dark:hover:border-blue-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
+              }
+            >
+              {coverImage ? (
+                <img
+                  src={coverImage.url}
+                  alt={coverImage.name || `${item.name} preview`}
+                  className="w-full h-36 object-cover object-top border-b-2 border-neutral-200 dark:border-neutral-700"
+                />
+              ) : null}
+              <div className={coverImage ? 'flex flex-col gap-1 p-3' : undefined}>
+                <div className="flex flex-row gap-2 items-center">
+                  <span className={typography.itemTitle}>{item.name}</span>
+                  <span className={`-tracking-[0.005em] ${typography.itemDate}`}>
+                    {formatYearFromDate(item.startDate)}
+                  </span>
+                </div>
+                <div className={typography.itemDesc}>{parser(item.desc)}</div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
