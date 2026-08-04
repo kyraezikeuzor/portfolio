@@ -226,7 +226,7 @@ const Projects = ({
       {description ? (
         <p className={`-mt-1 mb-3 ${typography.itemDesc}`}>{description}</p>
       ) : null}
-      <div className="flex flex-col md:grid grid-cols-2 gap-3">
+      <div className="flex flex-col md:grid grid-cols-2 gap-3 items-start">
         {projects.map((item, index) => {
           const coverImage = item.files?.[0];
 
