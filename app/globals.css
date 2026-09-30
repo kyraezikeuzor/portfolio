@@ -1,15 +1,40 @@
 @layer base {
   :root {
-    --radius: 0.5rem;
-    --clr-base: #fff;  /* #fafafa */
-    --clr-base-text: #353232;
-    --navbar-height: 72px;  /* Adjust this value based on your navbar height */
-    --footer-height: 60px;  /* Adjust this value based on your footer height */
+    /* White page ground; cards separate via border alone. */
+    --surface-primary: #ffffff;
+    --surface-card: #fdfdfc;
+    --surface-secondary: #f7f7f4;
+    /* A wide text range is what keeps the page from reading washed out:
+       near-black titles, dark body copy, and genuinely light metadata.
+       Each step has one job — collapsing them is what caused the wash. */
+    --text-primary: #202020; /* titles, section headings */
+    --text-secondary: #3a3a3a; /* body copy */
+    --text-soft: #666662; /* descriptions, social icons */
+    --text-nav: #4f4f4a; /* navigation chrome */
+    --text-tertiary: #8a8a84; /* dates, metadata */
+    /* Inline link underlines — lighter than metadata, but still visible */
+    --text-quiet: #9a9a93;
+    --border-strong: #d6d6d0;
+    --border-subtle: #e3e3de;
+    --border-card: #e6e6e1;
+    --navbar-height: 65px;
+    --footer-height: 60px;
   }
 
+  /* Dark mode mirrors the same intent: warm grounds, a wide text range. */
   :root.dark {
-    --clr-base: #121213;
-    --clr-base-text: #F9F8F8;
+    --surface-primary: #0d0d0c;
+    --surface-card: #171715;
+    --surface-secondary: #1f1f1d;
+    --text-primary: rgba(255, 255, 255, 0.95);
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --text-soft: rgba(255, 255, 255, 0.62);
+    --text-nav: rgba(255, 255, 255, 0.72);
+    --text-tertiary: rgba(255, 255, 255, 0.48);
+    --text-quiet: rgba(255, 255, 255, 0.38);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --border-subtle: rgba(255, 255, 255, 0.12);
+    --border-card: rgba(255, 255, 255, 0.11);
   }
 }
 
@@ -17,29 +42,23 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
-  background-color: var(--clr-base);
-  color: var(--clr-base-text);
+  background-color: var(--surface-primary);
+  color: var(--text-secondary);
+  font-synthesis-weight: none;
+  /* next/font supplies Inter; these are the fallbacks while it loads and on
+     systems where it fails. The handwritten logo is an SVG, not a font. */
+  font-family:
+    var(--font-inter),
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-weight:500;
-}
-
-svg {
-  color: var(--clr-base-text)
-}
-
-a {
-  cursor:pointer;
-}
-
-input {
-  background-color:transparent;
-  border: solid 1px var(--clr-base-accent);
-}
-
-input:focus {
-  outline:none;
+::selection {
+  background: rgba(42, 42, 40, 0.1);
+  color: var(--text-primary);
 }

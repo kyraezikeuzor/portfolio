@@ -1,4 +1,3 @@
-import { PHASE_DEVELOPMENT_SERVER } from 'next/dist/shared/lib/constants';
 import {
   PageObjectResponse,
   ImageBlockObjectResponse,
@@ -118,6 +117,7 @@ export interface PortfolioDatabase {
   skills: {
     id: string;
     name: string;
+    desc: ParsedRichText[];
   }[];
 }
 
@@ -147,7 +147,6 @@ export interface ParsedRichText {
   strikethrough: boolean;
   underline: boolean;
   code: boolean;
-  color: 'default' | 'red';
 }
 
 export interface ParsedFile {

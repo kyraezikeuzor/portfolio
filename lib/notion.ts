@@ -16,8 +16,11 @@ export default class NotionClient {
   constructor(auth: string, log: Logger) {
     this.client = new Client({
       auth,
+      // The SDK dumps every request/response at DEBUG, so opt in explicitly
       logLevel:
-        process.env.NODE_ENV === 'development' ? LogLevel.DEBUG : LogLevel.WARN,
+        process.env.NOTION_LOG_LEVEL === 'debug'
+          ? LogLevel.DEBUG
+          : LogLevel.WARN,
     });
     this.log = log;
   }
@@ -121,13 +124,21 @@ export default class NotionClient {
     return imageBlocks;
   }
 
-  // NEW METHOD: Update files property with new external URLs
   async updateFilesPropertyExternalUrls(
     pageId: string,
     propertyName: string,
     files: Array<{ name: string; url: string }>
   ) {
-    const properties: any = {};
+    const properties: Record<
+      string,
+      {
+        files: Array<{
+          name: string;
+          type: 'external';
+          external: { url: string };
+        }>;
+      }
+    > = {};
 
     properties[propertyName] = {
       files: files.map((file) => ({

@@ -1,5 +1,4 @@
-// lib/metadata.ts - Create a separate file for metadata logic
-import { Portfolio } from '@/lib/portfolio';
+import { getPortfolioData } from '@/lib/portfolio';
 import {
   defaultThumbnailUrl,
   defaultThumbnailAlt,
@@ -8,46 +7,69 @@ import {
   siteUrl,
 } from '@/lib/constants';
 
-let cachedMetadata: any = null;
+type SiteMetadata = {
+  summary: string;
+  thumbnail: {
+    url: string;
+    alt: string;
+  };
+};
 
-export async function getMetadata() {
-  if (cachedMetadata) {
-    return cachedMetadata;
-  }
+const fallbackMetadata: SiteMetadata = {
+  summary: defaultSummary,
+  thumbnail: {
+    url: defaultThumbnailUrl,
+    alt: defaultThumbnailAlt,
+  },
+};
 
+async function getMetadata(): Promise<SiteMetadata> {
   try {
-    const portfolio = await new Portfolio().getPortfolio();
+    const portfolio = await getPortfolioData();
     const summary = portfolio.summary.desc;
     const thumbnail = portfolio.thumbnail;
 
-    cachedMetadata = {
+    if (!summary) {
+      console.warn(
+        '[metadata] No Summary entry published in Notion — using defaultSummary'
+      );
+    }
+
+    if (!thumbnail.files[0]?.url) {
+      console.warn(
+        '[metadata] No Thumbnail image in Notion — using defaultThumbnailUrl'
+      );
+    }
+
+    return {
       summary: summary || defaultSummary,
       thumbnail: {
-        url: thumbnail.files[0].url || defaultThumbnailUrl,
+        url: thumbnail.files[0]?.url || defaultThumbnailUrl,
         alt: thumbnail.desc || defaultThumbnailAlt,
       },
     };
-
-    return cachedMetadata;
   } catch (error) {
-    console.error('Error fetching metadata:', error);
-    cachedMetadata = {
-      summary: defaultSummary,
-      thumbnailUrl: defaultThumbnailUrl,
-    };
-    return cachedMetadata;
+    console.error(
+      '[metadata] Failed to load portfolio, serving placeholder metadata:',
+      error
+    );
+    return fallbackMetadata;
   }
 }
 
-// layout.tsx
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '@/app/globals.css';
 
 import Navbar from '@/components/ui/navbar';
 import Footer from '@/components/ui/footer';
+import Theme from '@/components/ui/theme';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const { summary, thumbnail } = await getMetadata();
@@ -59,7 +81,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       url: siteUrl,
       type: 'website',
-      title: summary,
+      title: defaultTitle,
       description: summary,
       images: [
         {
@@ -79,7 +101,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -87,14 +109,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${inter.className}`}>
         <Navbar />
-        <main className="flex-1 container mx-auto max-w-[700px] p-5">
+        <main className="container mx-auto max-w-[700px] flex-1 px-5 pb-8 pt-12 sm:pb-10 sm:pt-14">
           {children}
         </main>
         <Footer />
+        <Theme />
       </body>
     </html>
   );

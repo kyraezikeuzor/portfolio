@@ -1,3 +1,5 @@
+import { cache } from 'react';
+import { unstable_cache } from 'next/cache';
 import NotionClient from '@/lib/notion';
 import {
   PortfolioDatabase,
@@ -7,6 +9,7 @@ import {
   ParsedRichText,
 } from '@/types';
 import Logger from '@/lib/logger';
+import { requireEnv } from '@/lib/utils';
 import type {
   PageObjectResponse,
   PartialPageObjectResponse,
@@ -14,17 +17,23 @@ import type {
   DatabaseObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints';
 
+function richTextToPlainText(description: PortfolioPage['desc']) {
+  if (typeof description === 'string') return description;
+  return description?.map((line) => line.text).join('') || '';
+}
+
 export class Portfolio {
   private connector: NotionClient;
   private databaseId: string;
   private data: PortfolioDatabase;
+  private log: Logger;
 
   constructor() {
-    this.connector = new NotionClient(
-      process.env.NOTION_TOKEN || '',
-      new Logger('debug')
+    this.log = new Logger(
+      process.env.NOTION_LOG_LEVEL === 'debug' ? 'debug' : 'error'
     );
-    this.databaseId = process.env.NOTION_DB_ID || '';
+    this.connector = new NotionClient(requireEnv('NOTION_TOKEN'), this.log);
+    this.databaseId = requireEnv('NOTION_DB_ID');
     this.data = {
       about: { id: '', desc: [] },
       headline: { id: '', desc: [] },
@@ -44,49 +53,44 @@ export class Portfolio {
     };
   }
 
-  private async processDatabasePage(
+  private processDatabasePage(
     page:
       | PageObjectResponse
       | PartialPageObjectResponse
       | PartialDatabaseObjectResponse
       | DatabaseObjectResponse
-  ): Promise<PortfolioPage> {
+  ): PortfolioPage {
     if (!('properties' in page)) {
       throw new Error('Invalid page object: missing properties');
     }
 
-    const properties = page.properties as Record<string, any>;
+    const properties =
+      page.properties as unknown as Partial<NotionDatabaseProperties>;
 
     return {
       id: page.id,
-      name: properties['Name']?.title?.[0]?.text?.content || '',
-      desc: properties['Description']?.rich_text?.map((line: any) => ({
+      name: properties.Name?.title[0]?.plain_text || '',
+      desc: properties.Description?.rich_text.map((line) => ({
         text: line.plain_text,
-        link: line.text.link,
+        link: line.href ? { url: line.href } : null,
         bold: line.annotations.bold,
         italic: line.annotations.italic,
         strikethrough: line.annotations.strikethrough,
         underline: line.annotations.underline,
         code: line.annotations.code,
-        color: line.annotations.color,
       })),
-      group: properties['Group']?.rich_text
-        .map(
-          (line: NotionDatabaseProperties['Group']['rich_text'][number]) =>
-            line.plain_text
-        )
+      group: properties.Group?.rich_text
+        .map((line) => line.plain_text)
         .join(''),
-      type: properties['Type']?.select?.name,
-      link: properties['Link']?.url || '',
-      published: properties['Publish']?.checkbox || false,
-      startDate: properties['Timeline']?.date?.start || '',
-      endDate: properties['Timeline']?.date?.end || '',
-      files: properties['Files']?.files?.map(
-        (file: NotionDatabaseProperties['Files']['files'][number]) => ({
-          name: file.name || '',
-          url: 'external' in file ? file.external.url : file.file.url,
-        })
-      ),
+      type: properties.Type?.select?.name,
+      link: properties.Link?.url || '',
+      published: properties.Publish?.checkbox || false,
+      startDate: properties.Timeline?.date?.start || '',
+      endDate: properties.Timeline?.date?.end || '',
+      files: properties.Files?.files.map((file) => ({
+        name: file.name || '',
+        url: 'external' in file ? file.external.url : file.file.url,
+      })),
     };
   }
 
@@ -95,7 +99,6 @@ export class Portfolio {
       if (!page.type || !page.published) {
         return;
       }
-      if (!page.type || !page.published) return;
 
       const parsedPage = {
         id: page.id,
@@ -124,27 +127,21 @@ export class Portfolio {
         case 'summary':
           this.data.summary = {
             id: parsedPage.id,
-            desc: Array.isArray(parsedPage.desc)
-              ? parsedPage.desc.map((line: any) => line.text).join('')
-              : parsedPage.desc,
+            desc: richTextToPlainText(parsedPage.desc),
           };
           break;
         case 'portrait':
           this.data.portrait = {
             id: parsedPage.id,
             files: parsedPage.files,
-            desc: Array.isArray(parsedPage.desc)
-              ? parsedPage.desc.map((line: any) => line.text).join('')
-              : parsedPage.desc,
+            desc: richTextToPlainText(parsedPage.desc),
           };
           break;
         case 'thumbnail':
           this.data.thumbnail = {
             id: parsedPage.id,
             files: parsedPage.files,
-            desc: Array.isArray(parsedPage.desc)
-              ? parsedPage.desc.map((line: any) => line.text).join('')
-              : parsedPage.desc,
+            desc: richTextToPlainText(parsedPage.desc),
           };
           break;
         case 'headline':
@@ -187,9 +184,7 @@ export class Portfolio {
           this.data.press.push({
             id: parsedPage.id,
             name: parsedPage.name,
-            desc: Array.isArray(parsedPage.desc)
-              ? parsedPage.desc.map((line: any) => line.text).join('')
-              : parsedPage.desc,
+            desc: richTextToPlainText(parsedPage.desc),
             group: parsedPage.group,
             link: parsedPage.link,
             datePublished: parsedPage.startDate,
@@ -238,33 +233,47 @@ export class Portfolio {
           });
           break;
         case 'skill':
-          this.data.skills.push({ id: parsedPage.id, name: parsedPage.name });
+          this.data.skills.push({
+            id: parsedPage.id,
+            name: parsedPage.name,
+            desc: parsedPage.desc as ParsedRichText[],
+          });
           break;
+        default:
+          // A misspelled Type in Notion would otherwise vanish without trace
+          this.log.error(
+            `Unrecognized Type "${page.type}" on page ${page.id} ("${parsedPage.name}") — entry skipped`
+          );
       }
     });
   }
 
-  async getPortfolio(
-    category?: Lowercase<PortfolioCategory>
-  ): Promise<PortfolioDatabase> {
+  async getPortfolio(): Promise<PortfolioDatabase> {
     const response = await this.connector.getPagesFromDatabase(
       this.databaseId,
       'Timeline',
       'descending'
     );
 
-    const pages = await Promise.all(response.map(this.processDatabasePage));
-
-    if (category) {
-      const newPages = pages.filter(
-        (page) => page.type?.toLowerCase() === category && page.published
-      );
-      this.categorizePages(newPages);
-      //console.log(this.data);
-    } else if (!category) {
-      this.categorizePages(pages);
-    }
+    this.categorizePages(response.map((page) => this.processDatabasePage(page)));
 
     return this.data;
   }
 }
+
+const loadPortfolioData = async () => {
+  return new Portfolio().getPortfolio();
+};
+
+// Persist one Notion response for 60 seconds across routes and requests. This
+// prevents project navigation and concurrent builds from issuing a fresh full
+// database query for every layout, page, and metadata render.
+const loadCachedPortfolioData = process.env.NEXT_RUNTIME
+  ? unstable_cache(loadPortfolioData, ['portfolio-data'], {
+      revalidate: 60,
+      tags: ['portfolio'],
+    })
+  : loadPortfolioData;
+
+// React cache also deduplicates multiple calls within the same render pass.
+export const getPortfolioData = cache(loadCachedPortfolioData);

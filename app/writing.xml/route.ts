@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Portfolio } from '@/lib/portfolio';
+import { getPortfolioData } from '@/lib/portfolio';
 import { ParsedRichText } from '@/types';
 import { siteUrl } from '@/lib/constants';
 
@@ -19,7 +19,7 @@ function richTextToPlain(desc: ParsedRichText[]) {
 }
 
 export async function GET() {
-  const portfolio = await new Portfolio().getPortfolio();
+  const portfolio = await getPortfolioData();
 
   const items = portfolio.writing
     .map((item) => {

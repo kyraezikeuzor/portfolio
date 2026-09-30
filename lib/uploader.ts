@@ -1,21 +1,28 @@
 import { BLOCK_TYPE_IMAGE } from '@/lib/constants';
 import * as cloudinaryClient from '@/lib/cloudinary';
 import NotionClient from '@/lib/notion';
-import downloadImageToBase64 from '@/lib/utils';
-import { getImageUrlToUploadFromNotionImageDescriptor, generateCloudinaryFilename } from '@/lib/utils';
+import {
+  downloadImageToBase64,
+  generateCloudinaryFilename,
+  getImageUrlToUploadFromNotionImageDescriptor,
+} from '@/lib/uploader-utils';
 import Logger from '@/lib/logger';
-import { GetPageResponse} from '@notionhq/client/build/src/api-endpoints';
+import { GetPageResponse } from '@notionhq/client/build/src/api-endpoints';
+import { NotionDatabaseProperties } from '@/types';
 import dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config({ path: '.env.local' });
 dotenv.config({ path: '.env' });
 
-// Debug: Check if environment variables are loaded
-//console.log('Environment variables check:');
-//console.log('NOTION_TOKEN:', process.env.NOTION_TOKEN ? 'SET' : 'NOT SET');
-//console.log('CLOUDINARY_URL:', process.env.CLOUDINARY_URL ? 'SET' : 'NOT SET');
-//console.log('NOTION_DB_ID:', process.env.NOTION_DB_ID ? 'SET' : 'NOT SET');
+// Log level for the standalone sync, overridable with SYNC_LOG_LEVEL
+function resolveSyncLogLevel(): 'debug' | 'info' | 'error' {
+  const level = process.env.SYNC_LOG_LEVEL;
+
+  return level === 'debug' || level === 'info' || level === 'error'
+    ? level
+    : 'error';
+}
 
 // Helper function to check if URL is already a Cloudinary URL
 function isCloudinaryUrl(url: string): boolean {
@@ -24,12 +31,13 @@ function isCloudinaryUrl(url: string): boolean {
 
 export default async function uploadNotionImagesToCloudinary({
   notionToken = process.env.NOTION_TOKEN || '',
-  notionDatabaseId = process.env.NOTION_DATABASE_ID || undefined,
+  notionDatabaseId = process.env.NOTION_DB_ID || undefined,
   notionPageId = undefined,
   cloudinaryUrl = process.env.CLOUDINARY_URL || '',
   cloudinaryUploadFolder = process.env.CLOUDINARY_UPLOAD_FOLDER || '',
-  logLevel = process.env.NODE_ENV === 'development' ? 'debug' : 'error',
-  uploadExternalsNotOnCloudinary = process.env.UPLOAD_EXTERNALS_NOT_ON_CLOUDINARY
+  logLevel = resolveSyncLogLevel(),
+  uploadExternalsNotOnCloudinary = process.env
+    .UPLOAD_EXTERNALS_NOT_ON_CLOUDINARY
     ? process.env.UPLOAD_EXTERNALS_NOT_ON_CLOUDINARY === '1'
     : false,
 }: {
@@ -43,21 +51,27 @@ export default async function uploadNotionImagesToCloudinary({
   | { notionDatabaseId?: undefined; notionPageId: string }
 )) {
   if (!notionToken) {
-    throw new Error(`Missing argument notionToken. Pass it or set it as the env var NEXT_PUBLIC_NOTION_TOKEN`);
+    throw new Error(
+      `Missing argument notionToken. Pass it or set it as the env var NOTION_TOKEN`
+    );
   }
   if (!notionDatabaseId && !notionPageId) {
     throw new Error(
-      `Missing both arguments notionDatabaseId and notionPageId. Pass one of them it or set the database ID in an env var NEXT_PUBLIC_NOTION_DATABASE_ID`,
+      `Missing both arguments notionDatabaseId and notionPageId. Pass one of them or set the database ID in the env var NOTION_DB_ID`
     );
   }
   if (!cloudinaryUrl) {
-    throw new Error(`Missing cloudinaryUrl. Pass it or set it as the env var NEXT_PUBLIC_CLOUDINARY_URL`);
+    throw new Error(
+      `Missing cloudinaryUrl. Pass it or set it as the env var CLOUDINARY_URL`
+    );
   }
 
   try {
     cloudinaryClient.config({ cloudinaryUrl });
   } catch (error) {
-    throw new Error(`Failed to configure Cloudinary: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to configure Cloudinary: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 
   const log = new Logger(logLevel);
@@ -71,11 +85,11 @@ export default async function uploadNotionImagesToCloudinary({
       ? `Fetching page ${notionPageId}`
       : notionDatabaseId
         ? `Fetching pages of database ${notionDatabaseId}`
-        : 'Missing page or database ID',
+        : 'Missing page or database ID'
   );
 
   let pages: GetPageResponse[] = [];
-  
+
   try {
     pages = notionPageId
       ? [await notionClient.getPage(notionPageId)]
@@ -83,7 +97,9 @@ export default async function uploadNotionImagesToCloudinary({
         ? await notionClient.getPagesFromDatabase(notionDatabaseId)
         : [];
   } catch (error) {
-    throw new Error(`Failed to fetch pages from Notion: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to fetch pages from Notion: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 
   if (pages.length === 0) {
@@ -131,24 +147,36 @@ export default async function uploadNotionImagesToCloudinary({
           } else {
             log.debug('Cover image downloaded');
 
-            const filenameFromTitle = generateCloudinaryFilename(coverUrl, title, 'cover');
-
-            const { url: coverExternalUrl } = await cloudinaryClient.uploadImage(
-              `data:image/jpeg;base64,${coverImage}`,
-              {
-                folder: `${cloudinaryUploadFolder}/${title}_${page.id}`,
-                public_id: filenameFromTitle,
-                overwrite: false, // Don't overwrite if already exists
-              },
+            const filenameFromTitle = generateCloudinaryFilename(
+              coverUrl,
+              title,
+              'cover'
             );
+
+            const { url: coverExternalUrl } =
+              await cloudinaryClient.uploadImage(
+                `data:image/jpeg;base64,${coverImage}`,
+                {
+                  folder: `${cloudinaryUploadFolder}/${title}_${page.id}`,
+                  public_id: filenameFromTitle,
+                  overwrite: false, // Don't overwrite if already exists
+                }
+              );
             log.debug('Cover image uploaded to Cloudinary');
 
-            await notionClient.updatePageCoverExternalUrl(page.id, coverExternalUrl);
-            log.info(`${page.id}: cover image copied to Cloudinary and asset updated in Notion ✅`);
+            await notionClient.updatePageCoverExternalUrl(
+              page.id,
+              coverExternalUrl
+            );
+            log.info(
+              `${page.id}: cover image copied to Cloudinary and asset updated in Notion ✅`
+            );
           }
         }
       } catch (error) {
-        log.error(`${page.id}: failed to process cover image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        log.error(
+          `${page.id}: failed to process cover image: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
       }
 
       ////////////////////
@@ -156,18 +184,34 @@ export default async function uploadNotionImagesToCloudinary({
       ////////////////////
       try {
         let filesPropertyName: string | undefined;
-        let fileUrls: Array<{ name: string; url: string; originalUrl: string }> = [];
+        let fileUrls: Array<{
+          name: string;
+          url: string;
+          originalUrl: string;
+        }> = [];
 
         // Find the files property and extract file information
         if ('properties' in page) {
           Object.entries(page.properties).forEach(([propertyName, prop]) => {
             if (prop && prop.type === 'files') {
               filesPropertyName = propertyName;
-              fileUrls = prop.files?.map((file: any) => ({
-                name: file.name,
-                url: file.file?.url || file.external?.url || '',
-                originalUrl: file.file?.url || file.external?.url || ''
-              })).filter(file => file.url !== '') || [];
+              fileUrls =
+                prop.files
+                  ?.map(
+                    (
+                      file: NotionDatabaseProperties['Files']['files'][number]
+                    ) => {
+                      const url =
+                        'file' in file ? file.file.url : file.external.url;
+
+                      return {
+                        name: file.name,
+                        url,
+                        originalUrl: url,
+                      };
+                    }
+                  )
+                  .filter((file) => file.url !== '') || [];
             }
           });
         }
@@ -175,79 +219,115 @@ export default async function uploadNotionImagesToCloudinary({
         if (!filesPropertyName || fileUrls.length === 0) {
           log.debug(`${page.id}: no files property or no files found`);
         } else {
-          log.debug(`${page.id}: found ${fileUrls.length} files in property '${filesPropertyName}'`);
-          
+          log.debug(
+            `${page.id}: found ${fileUrls.length} files in property '${filesPropertyName}'`
+          );
+
           let hasUpdates = false;
           const updatedFiles = [];
 
           for (const fileInfo of fileUrls) {
             try {
-
               const fileTitle = fileInfo.name;
               const fileOriginalUrl = fileInfo.url;
 
-              log.debug(`${page.id}: processing file: ${fileTitle} (${fileOriginalUrl})`);
-              
+              log.debug(
+                `${page.id}: processing file: ${fileTitle} (${fileOriginalUrl})`
+              );
+
               // Skip if already on Cloudinary
               if (isCloudinaryUrl(fileOriginalUrl)) {
-                log.debug(`${page.id}: file '${fileTitle}' is already on Cloudinary ✔`);
+                log.debug(
+                  `${page.id}: file '${fileTitle}' is already on Cloudinary ✔`
+                );
                 updatedFiles.push({ name: fileTitle, url: fileOriginalUrl });
                 continue;
               }
 
               // Check if we should upload this external URL
-              if (!uploadExternalsNotOnCloudinary && fileOriginalUrl.startsWith('http')) {
-                log.debug(`${page.id}: skipping external file '${fileTitle}' (uploadExternalsNotOnCloudinary is false)`);
+              if (
+                !uploadExternalsNotOnCloudinary &&
+                fileOriginalUrl.startsWith('http')
+              ) {
+                log.debug(
+                  `${page.id}: skipping external file '${fileTitle}' (uploadExternalsNotOnCloudinary is false)`
+                );
                 updatedFiles.push({ name: fileTitle, url: fileOriginalUrl });
                 continue;
               }
 
-              log.info(`${page.id}: uploading file '${fileTitle}' to Cloudinary`);
+              log.info(
+                `${page.id}: uploading file '${fileTitle}' to Cloudinary`
+              );
 
               const fileImage = await downloadImageToBase64(fileOriginalUrl);
               if (!fileImage) {
-                log.error(`${page.id}: failed to download file '${fileTitle}': ${fileOriginalUrl}`);
+                log.error(
+                  `${page.id}: failed to download file '${fileTitle}': ${fileOriginalUrl}`
+                );
                 updatedFiles.push({ name: fileTitle, url: fileOriginalUrl }); // Keep original URL
                 continue;
               }
               log.debug(`File '${fileTitle}' downloaded`);
 
               // Generate a consistent filename for Cloudinary
-              const cloudinaryFilename = generateCloudinaryFilename(fileOriginalUrl, fileTitle, 'file');
-
-              const { url: fileExternalUrl } = await cloudinaryClient.uploadImage(
-                `data:image/jpeg;base64,${fileImage}`,
-                {
-                  folder: `${cloudinaryUploadFolder}/${title}_${page.id}/files`,
-                  public_id: cloudinaryFilename,
-                  overwrite: false, // Don't overwrite if already exists
-                },
+              const cloudinaryFilename = generateCloudinaryFilename(
+                fileOriginalUrl,
+                fileTitle,
+                'file'
               );
-              
-              log.debug(`File '${fileTitle}' uploaded to Cloudinary: ${fileExternalUrl}`);
-              
+
+              const { url: fileExternalUrl } =
+                await cloudinaryClient.uploadImage(
+                  `data:image/jpeg;base64,${fileImage}`,
+                  {
+                    folder: `${cloudinaryUploadFolder}/${title}_${page.id}/files`,
+                    public_id: cloudinaryFilename,
+                    overwrite: false, // Don't overwrite if already exists
+                  }
+                );
+
+              log.debug(
+                `File '${fileTitle}' uploaded to Cloudinary: ${fileExternalUrl}`
+              );
+
               updatedFiles.push({ name: fileTitle, url: fileExternalUrl });
               hasUpdates = true;
-              
-              log.info(`${page.id}: file '${fileTitle}' copied to Cloudinary ✅`);
+
+              log.info(
+                `${page.id}: file '${fileTitle}' copied to Cloudinary ✅`
+              );
             } catch (error) {
-              log.error(`${page.id}: failed to process file '${fileInfo.name}': ${error instanceof Error ? error.message : 'Unknown error'}`);
-              updatedFiles.push({ name: fileInfo.name, url: fileInfo.originalUrl }); // Keep original URL
+              log.error(
+                `${page.id}: failed to process file '${fileInfo.name}': ${error instanceof Error ? error.message : 'Unknown error'}`
+              );
+              updatedFiles.push({
+                name: fileInfo.name,
+                url: fileInfo.originalUrl,
+              }); // Keep original URL
             }
           }
 
           // Update the files property in Notion if there were any changes
           if (hasUpdates) {
             try {
-              await notionClient.updateFilesPropertyExternalUrls(page.id, filesPropertyName, updatedFiles);
+              await notionClient.updateFilesPropertyExternalUrls(
+                page.id,
+                filesPropertyName,
+                updatedFiles
+              );
               log.info(`${page.id}: files property updated in Notion ✅`);
             } catch (error) {
-              log.error(`${page.id}: failed to update files property in Notion: ${error instanceof Error ? error.message : 'Unknown error'}`);
+              log.error(
+                `${page.id}: failed to update files property in Notion: ${error instanceof Error ? error.message : 'Unknown error'}`
+              );
             }
           }
         }
       } catch (error) {
-        log.error(`${page.id}: failed to process files: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        log.error(
+          `${page.id}: failed to process files: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
       }
 
       ////////////////////
@@ -258,7 +338,6 @@ export default async function uploadNotionImagesToCloudinary({
           image: 'icon' in page ? page.icon : undefined,
           uploadExternalsNotOnCloudinary,
         });
-
 
         if (!iconUrl) {
           log.debug(`${page.id}: icon image is already good ✔`);
@@ -282,20 +361,34 @@ export default async function uploadNotionImagesToCloudinary({
             image = `data:image/jpeg;base64,${iconImage}`;
           }
 
-          const cloudinaryFilename = generateCloudinaryFilename(iconUrl, title, 'icon');
+          const cloudinaryFilename = generateCloudinaryFilename(
+            iconUrl,
+            title,
+            'icon'
+          );
 
-          const { url: iconExternalUrl } = await cloudinaryClient.uploadImage(image, {
-            folder: `${cloudinaryUploadFolder}/${title}_${page.id}/icons`,
-            public_id: cloudinaryFilename,
-            overwrite: false, // Don't overwrite if already exists
-          });
+          const { url: iconExternalUrl } = await cloudinaryClient.uploadImage(
+            image,
+            {
+              folder: `${cloudinaryUploadFolder}/${title}_${page.id}/icons`,
+              public_id: cloudinaryFilename,
+              overwrite: false, // Don't overwrite if already exists
+            }
+          );
           log.debug('Icon image uploaded to Cloudinary');
 
-          await notionClient.updatePageIconExternalUrl(page.id, iconExternalUrl);
-          log.info(`${page.id}: icon image copied to Cloudinary and asset updated in Notion ✅`);
+          await notionClient.updatePageIconExternalUrl(
+            page.id,
+            iconExternalUrl
+          );
+          log.info(
+            `${page.id}: icon image copied to Cloudinary and asset updated in Notion ✅`
+          );
         }
       } catch (error) {
-        log.error(`${page.id}: failed to process icon: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        log.error(
+          `${page.id}: failed to process icon: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
       }
 
       ////////////////////
@@ -309,7 +402,9 @@ export default async function uploadNotionImagesToCloudinary({
         for (const imageBlock of imageBlocks) {
           try {
             if (!(BLOCK_TYPE_IMAGE in imageBlock)) {
-              log.error(`${page.id}: ${imageBlock.id}: unexpected image block without value property`);
+              log.error(
+                `${page.id}: ${imageBlock.id}: unexpected image block without value property`
+              );
               continue;
             }
 
@@ -319,49 +414,70 @@ export default async function uploadNotionImagesToCloudinary({
             });
 
             if (!imageUrl) {
-              log.debug(`${page.id}: ${imageBlock.id}: block image already good ✔`);
+              log.debug(
+                `${page.id}: ${imageBlock.id}: block image already good ✔`
+              );
               continue;
             } else if (isCloudinaryUrl(imageUrl)) {
-              log.debug(`${page.id}: ${imageBlock.id}: block image is already on Cloudinary ✔`);
+              log.debug(
+                `${page.id}: ${imageBlock.id}: block image is already on Cloudinary ✔`
+              );
               continue;
             }
-            log.info(`${page.id}: ${imageBlock.id}: uploading block image to Cloudinary`);
+            log.info(
+              `${page.id}: ${imageBlock.id}: uploading block image to Cloudinary`
+            );
 
             const blockImage = await downloadImageToBase64(imageUrl);
             if (!blockImage) {
-              log.error(`${page.id}: ${imageBlock.id}: failed to download block image`);
+              log.error(
+                `${page.id}: ${imageBlock.id}: failed to download block image`
+              );
               continue;
             }
             log.debug('Block image downloaded');
 
-            const filenameFromCaption = generateCloudinaryFilename(imageUrl, 
-              imageBlock[BLOCK_TYPE_IMAGE].caption?.map(c => c.plain_text).join(''), 
+            const filenameFromCaption = generateCloudinaryFilename(
+              imageUrl,
+              imageBlock[BLOCK_TYPE_IMAGE].caption
+                ?.map((c) => c.plain_text)
+                .join(''),
               `block_${imageBlock.id.slice(0, 8)}`
             );
 
-            const { url: imageExternalUrl } = await cloudinaryClient.uploadImage(
-              `data:image/jpeg;base64,${blockImage}`,
-              {
-                folder: `${cloudinaryUploadFolder}/${title}_${page.id}/image-blocks`,
-                public_id: filenameFromCaption,
-                overwrite: false, // Don't overwrite if already exists
-              },
-            );
+            const { url: imageExternalUrl } =
+              await cloudinaryClient.uploadImage(
+                `data:image/jpeg;base64,${blockImage}`,
+                {
+                  folder: `${cloudinaryUploadFolder}/${title}_${page.id}/image-blocks`,
+                  public_id: filenameFromCaption,
+                  overwrite: false, // Don't overwrite if already exists
+                }
+              );
             log.debug('Block image uploaded to Cloudinary');
 
-            await notionClient.updateImageBlockExternalUrl(imageBlock.id, imageExternalUrl);
+            await notionClient.updateImageBlockExternalUrl(
+              imageBlock.id,
+              imageExternalUrl
+            );
             log.info(
-              `${page.id}: ${imageBlock.id}: block image copied to Cloudinary and asset updated in Notion ✅`,
+              `${page.id}: ${imageBlock.id}: block image copied to Cloudinary and asset updated in Notion ✅`
             );
           } catch (error) {
-            log.error(`${page.id}: ${imageBlock.id}: failed to process block image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            log.error(
+              `${page.id}: ${imageBlock.id}: failed to process block image: ${error instanceof Error ? error.message : 'Unknown error'}`
+            );
           }
         }
       } catch (error) {
-        log.error(`${page.id}: failed to process image blocks: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        log.error(
+          `${page.id}: failed to process image blocks: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
       }
     } catch (error) {
-      log.error(`${page.id}: failed to process page: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      log.error(
+        `${page.id}: failed to process page: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -375,33 +491,29 @@ async function uploadAllNotionImagesToCloudinary() {
   }
 
   try {
-    //console.log('Starting upload process...');
-    //console.log('Database ID:', databaseId);
-    //console.log('Cloudinary URL:', process.env.CLOUDINARY_URL ? 'SET' : 'NOT SET');
-    //console.log('Cloudinary Upload Folder:', process.env.CLOUDINARY_UPLOAD_FOLDER || 'NOT SET');
 
-    const notionClient = new NotionClient(process.env.NOTION_TOKEN || '', new Logger('debug'))
-    const pageIds = await notionClient.getPageIdsFromDatabase(databaseId)
-    
-    //console.log(`Found ${pageIds.length} pages to process`);
+    const syncLogLevel = resolveSyncLogLevel();
+    const notionClient = new NotionClient(
+      process.env.NOTION_TOKEN || '',
+      new Logger(syncLogLevel)
+    );
+    const pageIds = await notionClient.getPageIdsFromDatabase(databaseId);
+
 
     for (const pageId of pageIds) {
       try {
-        //console.log(`Processing page ${pageId}...`);
         await uploadNotionImagesToCloudinary({
           notionToken: process.env.NOTION_TOKEN || '',
           notionPageId: pageId,
           cloudinaryUrl: process.env.CLOUDINARY_URL || '',
           cloudinaryUploadFolder: process.env.CLOUDINARY_UPLOAD_FOLDER || '',
-          logLevel: 'debug', // Force debug level for more visibility
-          uploadExternalsNotOnCloudinary: true // Force upload of external images
+          logLevel: syncLogLevel,
+          uploadExternalsNotOnCloudinary: true, // Force upload of external images
         });
-        //console.log(`Completed processing page ${pageId}`);
       } catch (error) {
         console.error(`Error processing page ${pageId}:`, error);
       }
     }
-    //console.log('Upload process completed');
   } catch (error) {
     console.error('Upload process failed:', error);
     throw error;
@@ -409,5 +521,5 @@ async function uploadAllNotionImagesToCloudinary() {
 }
 
 if (require.main === module) {
-  uploadAllNotionImagesToCloudinary()
+  uploadAllNotionImagesToCloudinary();
 }
